@@ -1,0 +1,76 @@
+{
+  "id": "marisa",
+  "name": "Marisa",
+  "fullName": "Marisa Kirisame",
+  "order": 3,
+  "stats": {
+    "strictness": 2,
+    "aggression": 4,
+    "unpredictability": 4,
+    "comment": "Marisa is greedy, no exception here. She doesn't need good cards to steal the pot."
+  },
+  "look": {
+    "color": "#c9a227",
+    "face": {
+      "x": 0.465,
+      "y": 0.238,
+      "size": 0.15
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      5,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 73,
+    "bluffType": 3,
+    "reading": 1,
+    "changeType": 1,
+    "tell": {
+      "when": "twoPairOrTrips",
+      "chance": 40,
+      "reveals": 2
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Your coins are as good as mine!",
+    "swap": "Gimme {n}!",
+    "keep": "Keepin' these, ze.",
+    "call": "Call, ze!",
+    "raise": "Raise!",
+    "raise2": "Let's make it big, ze!",
+    "drop": "Tch... I'm out.",
+    "busted": "I'm broke, ze! Time to take out a loan!"
+  }
+}

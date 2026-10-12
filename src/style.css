@@ -1,0 +1,479 @@
+/* The Flash stage is 400x300; main.ts zooms it to fit the window. */
+:root {
+  --swf-serif: 'Times New Roman', 'MS PMincho', 'Noto Serif JP', serif;
+  --swf-gothic: 'MS PGothic', 'Noto Sans JP', 'Helvetica Neue', Arial, sans-serif;
+  --coin-gold: #f7c23a;
+  --ink: #333;
+}
+
+html,
+body,
+#app {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  overflow: hidden;
+}
+
+#app {
+  display: grid;
+  place-items: center;
+}
+
+.stage {
+  position: relative;
+  width: 400px;
+  height: 300px;
+  overflow: hidden;
+  background: #fff;
+  font: bold 16px/1.15 var(--swf-serif);
+  color: var(--ink);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.stage[data-quality='low'] img {
+  image-rendering: pixelated;
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.clip,
+.figure img {
+  position: absolute;
+  pointer-events: none;
+}
+
+.text {
+  position: absolute;
+  white-space: pre;
+  overflow: visible;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+.hotspot {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.hotspot:focus-visible,
+.swf-button:focus-visible,
+.select-card:focus-visible {
+  outline: 2px dashed #36c;
+  outline-offset: 1px;
+}
+
+.fade {
+  background: #000;
+  opacity: 0;
+  transition: opacity 0.38s linear;
+  pointer-events: auto;
+}
+
+.fade.on {
+  opacity: 1;
+}
+
+/* --- Table ------------------------------------------------------------------------------------- */
+.figure {
+  position: absolute;
+  inset: 0;
+}
+
+.coin-label {
+  color: var(--coin-gold);
+  text-align: center;
+  line-height: 22px;
+}
+
+.player-coins {
+  color: var(--coin-gold);
+  font-size: 14px;
+  line-height: 15px;
+}
+
+.jien-text {
+  color: #404040;
+  font-size: 20px;
+  line-height: 30px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.jien-text.pressable {
+  pointer-events: auto;
+  cursor: pointer;
+  color: #c03;
+}
+
+.jien-text.pressable:hover {
+  text-decoration: underline;
+}
+
+.result-text {
+  color: #fff;
+  font-size: 16px;
+  line-height: 18px;
+}
+
+/* Close-up banner (64px), laid out like the original _R cut-in; .mirrored is the _M (middle seat) version.
+   1px of bleed right and below: at fractional zoom the rows don't land on whole pixels, and stacked banners
+   would otherwise show a hairline of the table between them. */
+.banner {
+  position: absolute;
+  left: 0;
+  width: 401px;
+  height: 65px;
+  overflow: hidden;
+}
+
+.banner.enter {
+  animation: banner-wipe 0.154s steps(8) both;
+}
+
+.banner.mirrored.enter {
+  animation-name: banner-wipe-right;
+}
+
+.banner.leave {
+  animation: banner-out 0.154s steps(6) both;
+}
+
+.banner.mirrored.leave {
+  animation-name: banner-out-left;
+}
+
+@keyframes banner-wipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes banner-wipe-right {
+  from {
+    clip-path: inset(0 0 0 100%);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes banner-out {
+  to {
+    transform: translateX(400px);
+  }
+}
+
+@keyframes banner-out-left {
+  to {
+    transform: translateX(-401px);
+  }
+}
+
+.banner-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--accent) 80%, #000) 0%,
+    var(--accent) 22%,
+    color-mix(in srgb, var(--accent) 45%, #fff) 48%,
+    var(--accent) 74%,
+    color-mix(in srgb, var(--accent) 80%, #000) 100%
+  );
+}
+
+.banner.dim .banner-bg {
+  filter: saturate(0.3) brightness(0.7);
+}
+
+.banner-face {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 190px;
+  height: 64px;
+  background-repeat: no-repeat;
+  -webkit-mask-image: linear-gradient(to right, #000 85%, transparent);
+  mask-image: linear-gradient(to right, #000 85%, transparent);
+}
+
+.banner.mirrored .banner-face {
+  left: auto;
+  right: 1px;
+  transform: scaleX(-1);
+}
+
+.banner.dim .banner-face {
+  filter: brightness(0.85);
+}
+
+/* Bubble box: x 172-383, y 8-45 (tail tip at the lower left). */
+.banner-bubble {
+  position: absolute;
+  left: 172px;
+  top: 8px;
+  width: 211px;
+  height: 37px;
+}
+
+.banner.open .banner-bubble {
+  left: 162px;
+  top: 1px;
+}
+
+.banner.mirrored .banner-bubble {
+  left: 17px;
+}
+
+.banner.mirrored.open .banner-bubble {
+  left: 27px;
+}
+
+.banner.mirrored .bubble-shape {
+  transform: scaleX(-1);
+}
+
+.bubble-shape {
+  position: absolute;
+  inset: 0;
+}
+
+.banner-text {
+  position: absolute;
+  left: 26px;
+  top: 2px;
+  width: 178px;
+  height: 33px;
+  color: var(--ink);
+  font: bold 17px/33px var(--swf-gothic);
+  text-align: center;
+  overflow: hidden;
+}
+
+.banner.mirrored .banner-text {
+  left: 7px;
+}
+
+.banner-text.two-lines {
+  line-height: 14px;
+  padding-top: 3px;
+  box-sizing: border-box;
+}
+
+.banner-info {
+  position: absolute;
+  right: 19px;
+  top: 43px;
+  color: var(--coin-gold);
+  font: bold 17px/20px var(--swf-serif);
+  text-shadow: 1px 1px 0 #7a5200, -1px -1px 0 #7a5200, 1px -1px 0 #7a5200, -1px 1px 0 #7a5200;
+  white-space: pre;
+}
+
+.banner.mirrored .banner-info {
+  right: auto;
+  left: 14px;
+}
+
+.banner-cards {
+  position: absolute;
+  left: 241px;
+  top: 25px;
+  display: flex;
+  gap: 3px;
+}
+
+.banner.mirrored .banner-cards {
+  left: 3px;
+}
+
+.mini-card {
+  width: 29px;
+  height: 39px;
+}
+
+/* Player box: the original Mona art; the bubble text sits on its baked-in bubble. */
+.player-bubble-text {
+  color: var(--ink);
+  font: bold 17px/28px var(--swf-gothic);
+  text-align: center;
+  overflow: hidden;
+}
+
+.hold-hit {
+  position: absolute;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.buttons {
+  position: absolute;
+  inset: 0;
+}
+
+.swf-button {
+  position: absolute;
+  z-index: 1;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.swf-button img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.anywhere {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+/* --- Menus ------------------------------------------------------------------------------------- */
+.option-mark {
+  position: absolute;
+}
+
+.option-mark.on {
+  background: var(--ink);
+}
+
+.select-cover {
+  position: absolute;
+  background: #cccc66;
+}
+
+.select-card {
+  position: absolute;
+  box-sizing: border-box;
+  padding: 0;
+  border: 2px solid var(--ink);
+  border-radius: 3px;
+  background: #fff;
+  cursor: pointer;
+  pointer-events: auto;
+  overflow: hidden;
+}
+
+.select-card:hover {
+  border-color: #36c;
+}
+
+.select-face {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 42px;
+  height: 58px;
+  border-bottom: 2px solid var(--ink);
+  background-color: color-mix(in srgb, var(--accent) 45%, #fff);
+  background-repeat: no-repeat;
+}
+
+.select-card.auto .select-face {
+  display: grid;
+  place-items: center;
+  background: #ff3333;
+  color: #fff;
+  font-size: 40px;
+}
+
+.select-name {
+  position: absolute;
+  top: 61px;
+  left: 0;
+  right: 0;
+  font-size: 11px;
+  text-align: center;
+}
+
+.select-card.auto .select-name {
+  color: #ff3333;
+}
+
+.select-footer {
+  color: #fff;
+  font-size: 11px;
+  line-height: 15px;
+  white-space: pre-wrap;
+}
+
+.rec-text {
+  color: #fff;
+  font-size: 15px;
+  line-height: 17px;
+}
+
+.rec-text.right {
+  text-align: right;
+}
+
+.credit-text {
+  color: #fff;
+  font: bold 12px/15px var(--swf-gothic);
+}
+
+.reset-text {
+  box-sizing: border-box;
+  padding-top: 9px;
+  background: #ddd;
+  color: var(--ink);
+  font: bold 14px/20px var(--swf-gothic);
+  text-align: center;
+}
+
+.select-page {
+  color: #fff;
+  font-size: 13px;
+  line-height: 20px;
+  text-align: center;
+}
+
+.select-screen .hotspot {
+  color: #fff;
+  font-size: 15px;
+}
+
+.banner.open .banner-text {
+  top: 0;
+  line-height: 27px;
+}
+
+/* Bust cut-in: the place shows big where the bet line usually is. */
+.banner.bust .banner-info {
+  color: #fff;
+  font-size: 19px;
+  text-shadow: 1px 1px 0 #900, -1px -1px 0 #900, 1px -1px 0 #900, -1px 1px 0 #900;
+  letter-spacing: 1px;
+}
+
+.figure {
+  transition: opacity 0.5s linear, filter 0.5s linear;
+}
+
+.figure.gone {
+  opacity: 0;
+  filter: grayscale(1);
+}

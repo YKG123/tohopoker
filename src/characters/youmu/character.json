@@ -1,0 +1,76 @@
+{
+  "id": "youmu",
+  "name": "Youmu",
+  "fullName": "Youmu Konpaku",
+  "order": 7,
+  "stats": {
+    "strictness": 4,
+    "aggression": 1,
+    "unpredictability": 2,
+    "comment": "Youmu was warned about gambling. She's been sheltered from this kind of thing."
+  },
+  "look": {
+    "color": "#3f9b5a",
+    "face": {
+      "x": 0.499,
+      "y": 0.154,
+      "size": 0.15
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      4,
+      6,
+      7,
+      7,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      1,
+      2,
+      4,
+      5,
+      6,
+      7,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 54,
+    "bluffType": 1,
+    "reading": 3,
+    "changeType": 3,
+    "tell": {
+      "when": "noPair",
+      "chance": 20,
+      "reveals": 0
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "I-I'm not supposed to gamble...",
+    "swap": "{n} card{s}, please!",
+    "keep": "I'll keep these!",
+    "call": "C-call...",
+    "raise": "Raise!",
+    "raise2": "W-with all my resolve!",
+    "drop": "I'm sorry, Lady Yuyuko...",
+    "busted": "Lady Yuyuko, I lost everything!"
+  }
+}

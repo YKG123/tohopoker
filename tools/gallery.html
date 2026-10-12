@@ -1,0 +1,8 @@
+<!doctype html><meta charset="utf-8"><title>UI gallery</title>
+<style>body{font:10px sans-serif;background:#888;display:flex;flex-wrap:wrap;gap:4px}figure{margin:0;background:#bbb;padding:2px}img{display:block;max-height:120px}</style>
+<script type="module">
+const m = await (await fetch('/ui/manifest.json')).json();
+const only = new URLSearchParams(location.search).get('only');
+for (const [k, v] of Object.entries(m)) { if (only && !k.startsWith(only)) continue;
+  document.body.insertAdjacentHTML('beforeend', `<figure><img src="/ui/${v.file}"><figcaption>${k}</figcaption></figure>`); }
+</script>

@@ -1,0 +1,76 @@
+{
+  "id": "yukari",
+  "name": "Yukari",
+  "fullName": "Yukari Yakumo",
+  "order": 2,
+  "stats": {
+    "strictness": 1,
+    "aggression": 3,
+    "unpredictability": 5,
+    "comment": "Yukari always seems to have the best cards. Does she have some aces in the gap, or is she just bluffing?"
+  },
+  "look": {
+    "color": "#8a5cc2",
+    "face": {
+      "x": 0.482,
+      "y": 0.153,
+      "size": 0.15
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      4,
+      5,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      3,
+      5,
+      6,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 70,
+    "bluffType": 3,
+    "reading": 3,
+    "changeType": 1,
+    "tell": {
+      "when": "onePair",
+      "chance": 50,
+      "reveals": 1
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Shall we play a little game?",
+    "swap": "{n}, please.",
+    "keep": "These will do nicely.",
+    "call": "I'll call~",
+    "raise": "Let's raise the stakes.",
+    "raise2": "I want more~",
+    "drop": "How boring. I fold.",
+    "busted": "My, how unlucky. I'll be going now~"
+  }
+}

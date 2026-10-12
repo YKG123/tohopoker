@@ -1,0 +1,76 @@
+{
+  "id": "remilia",
+  "name": "Remilia",
+  "fullName": "Remilia Scarlet",
+  "order": 6,
+  "stats": {
+    "strictness": 4,
+    "aggression": 5,
+    "unpredictability": 3,
+    "comment": "Remilia is the very relentless type. It's no wonder no one will play cards with her at the mansion."
+  },
+  "look": {
+    "color": "#c2185b",
+    "face": {
+      "x": 0.49,
+      "y": 0.195,
+      "size": 0.15
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      4,
+      6,
+      7,
+      7,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      3,
+      4,
+      5,
+      7,
+      7,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 76,
+    "bluffType": 2,
+    "reading": 3,
+    "changeType": 2,
+    "tell": {
+      "when": "straightOrBetter",
+      "chance": 20,
+      "reveals": 4
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Bow before fate.",
+    "swap": "Give me {n}.",
+    "keep": "Fate is already decided.",
+    "call": "I'll humor you.",
+    "raise": "Raise.",
+    "raise2": "Double it. I insist.",
+    "drop": "...Hmph. Next time.",
+    "busted": "Impossible!"
+  }
+}

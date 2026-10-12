@@ -1,0 +1,76 @@
+{
+  "id": "kaguya",
+  "name": "Kaguya",
+  "fullName": "Kaguya Houraisan",
+  "order": 14,
+  "stats": {
+    "strictness": 4,
+    "aggression": 3,
+    "unpredictability": 3,
+    "comment": "Kaguya isn't quite giving it her all. It would be rude for the host to win her own tournament, after all."
+  },
+  "look": {
+    "color": "#a23a5a",
+    "face": {
+      "x": 0.528,
+      "y": 0.134,
+      "size": 0.15
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      4,
+      6,
+      7,
+      7,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      3,
+      5,
+      6,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 66,
+    "bluffType": 2,
+    "reading": 3,
+    "changeType": 2,
+    "tell": {
+      "when": "straightOrBetter",
+      "chance": 20,
+      "reveals": 4
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Welcome to my tournament.",
+    "swap": "{n} card{s}, please.",
+    "keep": "I'm content with these.",
+    "call": "Call.",
+    "raise": "Raise.",
+    "raise2": "Let's make it interesting.",
+    "drop": "Oh dear, I fold.",
+    "busted": "Losing at my own tournament... how rude."
+  }
+}

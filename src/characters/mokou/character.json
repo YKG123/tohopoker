@@ -1,0 +1,76 @@
+{
+  "id": "mokou",
+  "name": "Mokou",
+  "fullName": "Fujiwara no Mokou",
+  "order": 15,
+  "stats": {
+    "strictness": 1,
+    "aggression": 5,
+    "unpredictability": 4,
+    "comment": "Money doesn't matter when you've lived forever. Mokou's just here to have a good time."
+  },
+  "look": {
+    "color": "#b84a3a",
+    "face": {
+      "x": 0.536,
+      "y": 0.118,
+      "size": 0.15
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      4,
+      5,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 78,
+    "bluffType": 3,
+    "reading": 1,
+    "changeType": 1,
+    "tell": {
+      "when": "twoPairOrTrips",
+      "chance": 50,
+      "reveals": 2
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Let's have some fun!",
+    "swap": "{n} for me!",
+    "keep": "Keeping these.",
+    "call": "Sure, I'll call.",
+    "raise": "Raise!",
+    "raise2": "Burn it all! Raise two!",
+    "drop": "Eh, whatever.",
+    "busted": "Heh, easy come, easy go!"
+  }
+}

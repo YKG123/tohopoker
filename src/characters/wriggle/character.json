@@ -1,0 +1,76 @@
+{
+  "id": "wriggle",
+  "name": "Wriggle",
+  "fullName": "Wriggle Nightbug",
+  "order": 9,
+  "stats": {
+    "strictness": 2,
+    "aggression": 2,
+    "unpredictability": 5,
+    "comment": "I hope Wriggle knows we're playing for money here. I don't think it would make a difference on her gameplay if she did."
+  },
+  "look": {
+    "color": "#2e7d6b",
+    "face": {
+      "x": 0.455,
+      "y": 0.164,
+      "size": 0.15
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      5,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 65,
+    "bluffType": 3,
+    "reading": 1,
+    "changeType": 1,
+    "tell": {
+      "when": "noPair",
+      "chance": 40,
+      "reveals": 0
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Don't underestimate bugs!",
+    "swap": "{n} card{s}!",
+    "keep": "I'm keeping these!",
+    "call": "Call!",
+    "raise": "Raise!",
+    "raise2": "Bug swarm raise!",
+    "drop": "Aww...",
+    "busted": "Hey! Bugs deserve a rematch!"
+  }
+}

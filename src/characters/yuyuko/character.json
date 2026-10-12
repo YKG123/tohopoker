@@ -1,0 +1,76 @@
+{
+  "id": "yuyuko",
+  "name": "Yuyuko",
+  "fullName": "Yuyuko Saigyouji",
+  "order": 8,
+  "stats": {
+    "strictness": 5,
+    "aggression": 4,
+    "unpredictability": 4,
+    "comment": "This person warned Youmu about gambling. She would do well to practice what she preaches."
+  },
+  "look": {
+    "color": "#e889b5",
+    "face": {
+      "x": 0.511,
+      "y": 0.158,
+      "size": 0.15
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      2,
+      3,
+      6,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 73,
+    "bluffType": 3,
+    "reading": 3,
+    "changeType": 1,
+    "tell": {
+      "when": "straightOrBetter",
+      "chance": 10,
+      "reveals": 4
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Oh my, what fun~",
+    "swap": "{n} more, please~",
+    "keep": "These look tasty~",
+    "call": "I'll call~",
+    "raise": "A little more~",
+    "raise2": "Let's go all the way~",
+    "drop": "Oh well~",
+    "busted": "Oh my, all gone~ Is there food, at least?"
+  }
+}

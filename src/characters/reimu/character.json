@@ -1,0 +1,76 @@
+{
+  "id": "reimu",
+  "name": "Reimu",
+  "fullName": "Reimu Hakurei",
+  "order": 1,
+  "stats": {
+    "strictness": 3,
+    "aggression": 2,
+    "unpredictability": 2,
+    "comment": "Reimu really isn't a gambler. She just doesn't have the donations for it."
+  },
+  "look": {
+    "color": "#d8323c",
+    "face": {
+      "x": 0.48,
+      "y": 0.157,
+      "size": 0.15
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      4,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 59,
+    "bluffType": 1,
+    "reading": 2,
+    "changeType": 3,
+    "tell": {
+      "when": "twoPairOrTrips",
+      "chance": 30,
+      "reveals": 2
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Let's get this over with.",
+    "swap": "{n} card{s}, please.",
+    "keep": "I'll keep these.",
+    "call": "Fine, I'll call.",
+    "raise": "Raise.",
+    "raise2": "Raising by two!",
+    "drop": "Not worth it.",
+    "busted": "There goes this month's donations..."
+  }
+}

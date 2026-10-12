@@ -1,0 +1,76 @@
+{
+  "id": "eirin",
+  "name": "Eirin",
+  "fullName": "Eirin Yagokoro",
+  "order": 13,
+  "stats": {
+    "strictness": 4,
+    "aggression": 5,
+    "unpredictability": 1,
+    "comment": "Surgically & methodically picks apart her opponents. Being a doctor means you play by the book."
+  },
+  "look": {
+    "color": "#2f3f8f",
+    "face": {
+      "x": 0.313,
+      "y": 0.123,
+      "size": 0.15
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      4,
+      6,
+      7,
+      7,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      3,
+      4,
+      5,
+      7,
+      7,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 72,
+    "bluffType": 1,
+    "reading": 3,
+    "changeType": 3,
+    "tell": {
+      "when": "twoPairOrTrips",
+      "chance": 20,
+      "reveals": 2
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Let's proceed methodically.",
+    "swap": "{n} card{s}.",
+    "keep": "No exchange necessary.",
+    "call": "Call.",
+    "raise": "Raise.",
+    "raise2": "Raise two, as prescribed.",
+    "drop": "I'm out.",
+    "busted": "An unexpected diagnosis. I'm out."
+  }
+}

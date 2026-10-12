@@ -1,0 +1,76 @@
+{
+  "id": "mystia",
+  "name": "Mystia",
+  "fullName": "Mystia Lorelei",
+  "order": 10,
+  "stats": {
+    "strictness": 2,
+    "aggression": 3,
+    "unpredictability": 4,
+    "comment": "She lives on the element of surprise. Expect the unexpected tonight."
+  },
+  "look": {
+    "color": "#b5527e",
+    "face": {
+      "x": 0.476,
+      "y": 0.159,
+      "size": 0.15
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      5,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      3,
+      5,
+      6,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 68,
+    "bluffType": 3,
+    "reading": 1,
+    "changeType": 1,
+    "tell": {
+      "when": "straightOrBetter",
+      "chance": 40,
+      "reveals": 4
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Chin chin~ Let's play!",
+    "swap": "{n} card{s}~",
+    "keep": "None~",
+    "call": "Call~",
+    "raise": "Raise~",
+    "raise2": "Surprise~!",
+    "drop": "Maybe not...",
+    "busted": "Chin... chin... I'm out of coins..."
+  }
+}

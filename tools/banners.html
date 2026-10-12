@@ -1,0 +1,19 @@
+<!doctype html><meta charset="utf-8"><title>Banner preview</title>
+<style>body{margin:0;background:#222}</style>
+<!-- Dev preview: every character's close-up banner, to check look.face. Open /tools/banners.html?emotion=tell -->
+<script type="module">
+import '/src/style.css';
+import { characters } from '/src/characters/index.ts';
+import { Banner } from '/src/ui/table.ts';
+const emotion = new URLSearchParams(location.search).get('emotion') ?? 'neutral';
+const wrap = document.createElement('div');
+wrap.style.cssText = 'position:relative;width:800px;zoom:1.5;display:flex;flex-wrap:wrap;gap:0';
+document.body.append(wrap);
+for (const c of characters) {
+  const cell = document.createElement('div');
+  cell.className = 'stage';
+  cell.style.cssText = 'width:400px;height:76px;position:relative';
+  wrap.append(cell);
+  await new Banner(cell, c).enter(0, emotion, c.name);
+}
+</script>

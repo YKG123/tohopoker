@@ -1,0 +1,76 @@
+{
+  "id": "sakuya",
+  "name": "Sakuya",
+  "fullName": "Sakuya Izayoi",
+  "order": 5,
+  "stats": {
+    "strictness": 5,
+    "aggression": 3,
+    "unpredictability": 1,
+    "comment": "Strong discipline shows right through Sakuya's gameplay. If she had no honor, she'd be the most likely to cheat."
+  },
+  "look": {
+    "color": "#5a6fa8",
+    "face": {
+      "x": 0.559,
+      "y": 0.13,
+      "size": 0.15
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      2,
+      3,
+      6,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      3,
+      5,
+      6,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 62,
+    "bluffType": 1,
+    "reading": 3,
+    "changeType": 3,
+    "tell": {
+      "when": "twoPairOrTrips",
+      "chance": 10,
+      "reveals": 2
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Shall we begin?",
+    "swap": "{n}, if you please.",
+    "keep": "No change.",
+    "call": "Call.",
+    "raise": "Raise.",
+    "raise2": "Two, precisely.",
+    "drop": "I withdraw.",
+    "busted": "My apologies, mistress... I'm out."
+  }
+}

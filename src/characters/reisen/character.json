@@ -1,0 +1,90 @@
+{
+  "id": "reisen",
+  "name": "Reisen",
+  "fullName": "Reisen Udongein Inaba",
+  "order": 12,
+  "stats": {
+    "strictness": 3,
+    "aggression": 4,
+    "unpredictability": 3,
+    "comment": "Tewi isn't really helping out here. She just likes to cheer Reisen on."
+  },
+  "look": {
+    "color": "#a678d6",
+    "face": {
+      "x": 0.51,
+      "y": 0.245,
+      "size": 0.15
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    },
+    "companion": {
+      "name": "Tewi",
+      "face": {
+        "x": 0.453,
+        "y": 0.223,
+        "size": 0.15
+      },
+      "sprites": {
+        "neutral": "tewi-neutral.webp",
+        "win": "tewi-win.webp",
+        "lose": "tewi-lose.webp",
+        "tell": "tewi-tell.webp"
+      }
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      4,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 71,
+    "bluffType": 2,
+    "reading": 2,
+    "changeType": 2,
+    "tell": {
+      "when": "noPair",
+      "chance": 30,
+      "reveals": 0
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Master said to win this...",
+    "swap": "{n}, please.",
+    "keep": "I'll keep these.",
+    "call": "Call.",
+    "raise": "Raise.",
+    "raise2": "We'll raise two!",
+    "drop": "I'm out...",
+    "busted": "Master is going to kill me..."
+  }
+}
