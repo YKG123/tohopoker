@@ -18,6 +18,42 @@ export function imageSize(url: string): Promise<{ w: number; h: number }> {
   return p;
 }
 
+const widths = new Map<string, Promise<number>>();
+
+/**
+ * How wide the figure looks at the table, in face heights: the opaque part above the rail
+ * (about 2.3 faces below the eyes). Sprite canvases carry uneven transparent margins, so the
+ * canvas width alone sorts some figures wrongly.
+ */
+export function figureWidth(url: string, face: FaceBox): Promise<number> {
+  let p = widths.get(url);
+  if (!p) {
+    p = keepInMemory(url).then((src) => new Promise<number>((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const w = img.naturalWidth, h = img.naturalHeight, s = face.size * h;
+        const rows = Math.max(1, Math.min(h, Math.round(face.y * h + 2.3 * s)));
+        const ctx = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
+        if (!ctx) return resolve(w / s);
+        ctx.canvas.width = w;
+        ctx.canvas.height = rows;
+        ctx.drawImage(img, 0, 0);
+        const a = ctx.getImageData(0, 0, w, rows).data;
+        let left = w, right = -1;
+        for (let y = 0; y < rows; y++) {
+          for (let x = 0; x < left; x++) if (a[(y * w + x) * 4 + 3] > 40) { left = x; break; }
+          for (let x = w - 1; x > right; x--) if (a[(y * w + x) * 4 + 3] > 40) { right = x; break; }
+        }
+        resolve(right < left ? w / s : (right - left + 1) / s);
+      };
+      img.onerror = () => resolve(0);
+      img.src = src;
+    }));
+    widths.set(url, p);
+  }
+  return p;
+}
+
 export const preloadImages = (urls: string[]): Promise<unknown> => Promise.all(urls.map(imageSize));
 
 /**

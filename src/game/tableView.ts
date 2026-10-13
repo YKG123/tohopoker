@@ -50,7 +50,6 @@ export class TableView implements MatchView {
   private bannerLayer: HTMLElement;
   private slots = new Map<number, Slot>();
   private spots: SeatSpot[];
-  private rowH: number;
   private n: number;
   /** The player's seat, or -1 while spectating. */
   private me: number;
@@ -70,7 +69,6 @@ export class TableView implements MatchView {
     this.me = seats.findIndex((s) => s.human && !s.busted);
     const count = this.me >= 0 ? this.n - 1 : this.n;
     this.spots = seatLayout(count);
-    this.rowH = Math.min(BANNER_H, Math.floor(ROWS_H / count));
     this.root = layer(stage, 'table-scene');
     // Backdrop, then the characters, then the felt: the table's own curved rail hides their lower half.
     new Clip(layer(this.root), 'table', 0, 0).show('table');
@@ -154,13 +152,31 @@ export class TableView implements MatchView {
     return this.me >= 0 ? (index - this.me - 1 + this.n) % this.n : index;
   }
 
+  /** Opponents still at the table, in position order: the bet rounds stack one row each,
+   *  so a five-seat table down to four players draws four rows, not four and a gap. */
+  private rows(): number[] {
+    return [...this.slots].filter(([, slot]) => !slot.gone).map(([i]) => i).sort((a, b) => this.pos(a) - this.pos(b));
+  }
+
+  private get rowH(): number {
+    return Math.min(BANNER_H, Math.floor(ROWS_H / Math.max(1, this.rows().length)));
+  }
+
+  private row(seat: Seat): number {
+    const r = this.rows().indexOf(seat.index);
+    return r >= 0 ? r : this.pos(seat.index);
+  }
+
   private rowY(seat: Seat): number {
-    return this.pos(seat.index) * this.rowH;
+    return this.row(seat) * this.rowH;
   }
 
   /** A seat's close-up: in its row (scaled to the row height), or full size for the mid-table cut-ins at y 71. */
   private banner(seat: Seat, y: number, emotion: Emotion, text: string, o: BannerOptions = {}): Promise<void> {
-    return this.slots.get(seat.index)!.banner.enter(y, emotion, text, { height: y === 71 ? BANNER_H : this.rowH, ...o });
+    const banner = this.slots.get(seat.index)!.banner;
+    // Rows alternate sides; the mid-table cut-ins keep the seat's own side.
+    banner.setMirrored((y === 71 ? this.pos(seat.index) : this.row(seat)) % 2 === 1);
+    return banner.enter(y, emotion, text, { height: y === 71 ? BANNER_H : this.rowH, ...o });
   }
 
   /** Matches the seats to who's sitting in them; returns the slots of anyone who left. */

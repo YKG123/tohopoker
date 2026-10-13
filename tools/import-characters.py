@@ -122,7 +122,16 @@ def write(cid, name, full, s, a, u, tell, color, face, comment, lines, order, fa
             'face': {'x': cface[0], 'y': cface[1], 'size': 0.15},
             'sprites': {e.lower(): f'{cname.lower()}-{e.lower()}.webp' for e in EMOTIONS},
         }
-    with open(os.path.join(dest, 'character.json'), 'w') as f:
+    # Hand edits win over the tables above: proofread lines and positions set in tools/faces.html.
+    path = os.path.join(dest, 'character.json')
+    if os.path.exists(path):
+        with open(path) as f:
+            old = json.load(f)
+        data['lines'] = {**data['lines'], **old.get('lines', {})}
+        data['look']['face'] = old['look']['face']
+        if 'companion' in data['look'] and 'companion' in old['look']:
+            data['look']['companion']['face'] = old['look']['companion']['face']
+    with open(path, 'w') as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
         f.write('\n')
     print('wrote', cid)

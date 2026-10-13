@@ -4,7 +4,7 @@ import type { Character } from '../characters';
 import type { Card } from '../engine/cards';
 import type { Emotion } from '../engine/types';
 import { type Sfx, play, ui, uiUrl } from './assets';
-import { paintFace, placeFigure } from './portrait';
+import { figureWidth, paintFace, placeFigure } from './portrait';
 import { Clip, el, frames, place, textField } from './stage';
 
 // --- Opponent at the table (In_E1-3, In_Coin1-3, In_DCard1-3, In_O_Card1-3) -------------------------
@@ -98,7 +98,11 @@ export class OpponentSeat {
     await placeFigure(this.figure, c.art[emotion], c.look.face, x, faceY, faceH);
     this.figure.style.transform = mirror;
     // Widest figures stand at the back, so big wings and sleeves never cover a narrower neighbor's face.
-    if (!this.wrap.style.zIndex) this.wrap.style.zIndex = String(Math.max(1, 5000 - Math.round(parseFloat(this.figure.style.width))));
+    // Measured on the neutral sprite so a seat keeps its place whatever the pose.
+    if (!this.wrap.style.zIndex) {
+      const width = await figureWidth(c.art.neutral, c.look.face);
+      this.wrap.style.zIndex = String(Math.max(1, 5000 - Math.round(width * 100)));
+    }
     if (this.companion && c.companionArt && c.look.companion) {
       const side = flip ? -1 : 1;
       await placeFigure(this.companion, c.companionArt[emotion], c.look.companion.face, x + 46 * side * k, faceY + 46 * k, 24 * k);
@@ -196,6 +200,10 @@ export class Banner {
     this.info = el('div', 'banner-info', this.inner);
     this.cards = el('div', 'banner-cards', this.inner);
     this.root.style.display = 'none';
+  }
+
+  setMirrored(on: boolean): void {
+    this.root.classList.toggle('mirrored', on);
   }
 
   private async setFace(emotion: Emotion): Promise<void> {
