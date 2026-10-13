@@ -1,0 +1,77 @@
+{
+  "id": "ran",
+  "name": "Ran",
+  "fullName": "Ran Yakumo",
+  "order": 23,
+  "stats": {
+    "strictness": 1,
+    "aggression": 2,
+    "unpredictability": 4,
+    "comment": "You can sense Yukari's influence on Ran. Her tricks are all borrowed, but they still work."
+  },
+  "look": {
+    "color": "#e8b62a",
+    "face": {
+      "x": 0.527,
+      "y": 0.16,
+      "size": 0.148
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      4,
+      5,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 63,
+    "bluffType": 3,
+    "reading": 1,
+    "changeType": 1,
+    "tell": {
+      "when": "onePair",
+      "chance": 50,
+      "reveals": 1
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Lady Yukari sends her regards.",
+    "swap": "{n}, please.",
+    "keep": "As desired.",
+    "call": "Call.",
+    "raise": "Raise.",
+    "raise2": "Raise two.",
+    "drop": "I retreat.",
+    "allIn": "All in.",
+    "busted": "Lady Yukari will not be pleased..."
+  }
+}

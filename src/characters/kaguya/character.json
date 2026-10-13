@@ -64,13 +64,14 @@
     "randomBetting": false
   },
   "lines": {
-    "greeting": "Welcome to my tournament.",
+    "greeting": "Is everyone having a good time?",
     "swap": "{n} card{s}, please.",
     "keep": "I'm content with these.",
     "call": "Call.",
     "raise": "Raise.",
     "raise2": "Let's make it interesting.",
     "drop": "Oh dear, I fold.",
-    "busted": "Losing at my own tournament... how rude."
+    "allIn": ".",
+    "busted": "It would have been rude if I won."
   }
 }

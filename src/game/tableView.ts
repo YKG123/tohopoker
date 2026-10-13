@@ -1,107 +1,280 @@
 // MatchView for the real table. Waits are the gaps between the SWF's timeline labels (frames at 52fps).
+// The player always sits at the bottom; the other seats spread across the top in turn order. While
+// spectating a tournament table there is no player: every seat is across the top.
 import type { Character } from '../characters';
 import type { BetAction } from '../engine/ai';
 import type { Card } from '../engine/cards';
 import { handName } from '../engine/hand';
-import type { MatchResult, MatchView, PlayerBet, Seat } from '../engine/match';
+import type { Emotion } from '../engine/types';
+import { type GameSummary, type MatchView, type PlayerBet, type Seat, ordinal } from '../engine/match';
 import { player } from '../player';
 import { type Music, play, playBgm, setBgmVolume, stopBgm } from '../ui/assets';
-import { Clip, autoplay, frames, layer, textField } from '../ui/stage';
-import { Banner, Buttons, Dealer, OpponentSeat, PlayerHand, PlayerPanel } from '../ui/table';
+import { Clip, autoplay, el, frames, layer, place, textField } from '../ui/stage';
+import { BANNER_H, Banner, type BannerOptions, Buttons, Dealer, OpponentSeat, PlayerHand, PlayerPanel, type SeatLayers, type SeatSpot, seatLayout } from '../ui/table';
 
 const BET_SOUND: Record<BetAction, 'drop' | 'call' | 'raise' | 'raise2'> = { 0: 'drop', 1: 'call', 2: 'raise', 3: 'raise2' };
+/** Banner rows stack down to the top of the player's box. */
+const ROWS_H = 192;
+
+interface Slot {
+  character: Character;
+  table: OpponentSeat;
+  banner: Banner;
+  /** Already faded out (went broke). */
+  gone: boolean;
+}
+
+/** Spectating speeds on the slider. */
+export const WATCH_SPEEDS = [0.5, 1, 1.5, 2, 3, 5, 8];
+
+export interface TableOptions {
+  /** Cash games: the scheduled number of rounds, shown on the dealer's sign. */
+  roundLimit?: number;
+  /** Spectating: the Skip button's action. */
+  onSkip?: () => void;
+  /** Called as each round starts, before anything is shown. */
+  onRound?: () => void;
+  /** Spectating: ◀ ▶ pick another table to watch (-1/+1); returns the caption to show until it switches. */
+  onSwitch?: (dir: -1 | 1) => string;
+  /** Spectating: the speed slider's starting value and what it changes. */
+  speed?: { value: number; onChange: (v: number) => void };
+  /** Spectating: the line under the table. */
+  caption?: string;
+}
+
+export const seatName = (s: Seat): string => s.character?.name ?? player.name;
 
 export class TableView implements MatchView {
   private root: HTMLElement;
-  private seats: OpponentSeat[] = [];
-  private banners: Banner[] = [];
+  private layers: SeatLayers;
+  private bannerLayer: HTMLElement;
+  private slots = new Map<number, Slot>();
+  private spots: SeatSpot[];
+  private rowH: number;
+  private n: number;
+  /** The player's seat, or -1 while spectating. */
+  private me: number;
   private dealer: Dealer;
   private panel: PlayerPanel;
   private hand: PlayerHand;
   private buttons: Buttons;
   private result: HTMLDivElement[];
+  private spectateBar?: HTMLElement;
   private bgmTrack = Math.floor(Math.random() * 3) + 1;
+  private ante = 0;
+  /** The round being played (for the scoreboard). */
+  round = 0;
 
-  constructor(stage: HTMLElement, opponents: Character[]) {
+  constructor(stage: HTMLElement, seats: Seat[], private opts: TableOptions = {}) {
+    this.n = seats.length;
+    this.me = seats.findIndex((s) => s.human && !s.busted);
+    const count = this.me >= 0 ? this.n - 1 : this.n;
+    this.spots = seatLayout(count);
+    this.rowH = Math.min(BANNER_H, Math.floor(ROWS_H / count));
     this.root = layer(stage, 'table-scene');
     // Backdrop, then the characters, then the felt: the table's own curved rail hides their lower half.
     new Clip(layer(this.root), 'table', 0, 0).show('table');
     const figures = layer(this.root, 'figures');
-    new Clip(layer(this.root), 'table', 0, 0).show('table-felt');
+    const felt = layer(this.root);
+    new Clip(felt, 'table', 0, 0).show('table-felt');
+    // Other table sizes draw their own coin boxes: paint over the three baked into the felt art.
+    if (count !== 3) place(el('div', 'label-cover', felt), 0, 0, 400, 25);
     const onTable = layer(this.root, 'on-table');
     const cards = layer(this.root, 'cards');
     this.hand = new PlayerHand(cards, cards);
-    this.panel = new PlayerPanel(layer(this.root));
-    const seatLayers = { onTable, figures, coins: layer(this.root, 'coins') };
-    opponents.forEach((c, i) => (this.seats[i + 1] = new OpponentSeat(seatLayers, i + 1, c)));
-    const banners = layer(this.root, 'banners');
+    const panelLayer = layer(this.root);
+    this.panel = new PlayerPanel(panelLayer);
+    this.layers = { onTable, figures, coins: layer(this.root, 'coins') };
+    this.bannerLayer = layer(this.root, 'banners');
     this.dealer = new Dealer(layer(this.root, 'dealer'));
-    opponents.forEach((c, i) => (this.banners[i + 1] = new Banner(banners, c, i + 1 === 2)));
     const ui = layer(this.root, 'controls');
     this.result = [[40, 195], [130, 195], [210, 195], [270, 195]].map(([x, y]) => textField(ui, 'result-text', x, y));
     this.buttons = new Buttons(ui);
+    if (this.me < 0) {
+      panelLayer.style.display = 'none';
+      cards.style.display = 'none';
+      this.spectateBar = layer(ui, 'spectate-bar');
+      // Repaint the bottom strip: the player's coin box is baked into the art under where the panel was.
+      place(el('div', 'spectate-cover', this.spectateBar), 0, 192, 400, 108);
+      const caption = textField(this.spectateBar, 'spectate-text', 12, 204, 376, 50);
+      caption.textContent = `${opts.caption ?? 'Spectating'}\nPress Tab for the standings.`;
+      const button = (x: number, w: number, text: string, onClick: () => void, cls = '') => {
+        const b = el('button', `menu-button ${cls}`, this.spectateBar!);
+        place(b, x, 268, w, 24);
+        b.textContent = text;
+        b.addEventListener('click', () => {
+          play('card');
+          onClick();
+        });
+        return b;
+      };
+      if (opts.onSwitch) {
+        const to = (dir: -1 | 1) => (caption.textContent = `${opts.onSwitch!(dir)}\nPress Tab for the standings.`);
+        button(12, 72, '◀ Table', () => to(-1), 'blue');
+        button(88, 72, 'Table ▶', () => to(1), 'blue');
+      }
+      if (opts.speed) {
+        const { value, onChange } = opts.speed;
+        const label = textField(this.spectateBar, 'spectate-speed', 168, 262, 100, 14);
+        const slider = el('input', 'speed-slider', this.spectateBar);
+        place(slider, 168, 276, 100, 16);
+        slider.type = 'range';
+        slider.min = '0';
+        slider.max = String(WATCH_SPEEDS.length - 1);
+        slider.value = String(Math.max(0, WATCH_SPEEDS.indexOf(value)));
+        slider.setAttribute('aria-label', 'Spectating speed');
+        const show = () => (label.textContent = `Speed x${WATCH_SPEEDS[+slider.value]}`);
+        slider.addEventListener('input', () => {
+          show();
+          onChange(WATCH_SPEEDS[+slider.value]);
+        });
+        // Arrow keys stay on the slider; Tab still goes to the standings rather than moving focus.
+        slider.addEventListener('keydown', (e) => e.key !== 'Tab' && e.stopPropagation());
+        slider.addEventListener('change', () => slider.blur());
+        show();
+      }
+      if (opts.onSkip) {
+        const skip = button(276, 112, 'Stop Spectating', () => {
+          skip.disabled = true;
+          opts.onSkip!();
+        });
+      }
+    }
+    this.sync(seats);
   }
 
-  destroy(): void {
-    stopBgm();
+  destroy(keepMusic = false): void {
+    if (!keepMusic) stopBgm();
     this.root.remove();
+  }
+
+  // --- Seats -------------------------------------------------------------------------------------
+  /** Position across the top, left to right: the seats after the player's, in turn order. */
+  private pos(index: number): number {
+    return this.me >= 0 ? (index - this.me - 1 + this.n) % this.n : index;
+  }
+
+  private rowY(seat: Seat): number {
+    return this.pos(seat.index) * this.rowH;
+  }
+
+  /** A seat's close-up: in its row (scaled to the row height), or full size for the mid-table cut-ins at y 71. */
+  private banner(seat: Seat, y: number, emotion: Emotion, text: string, o: BannerOptions = {}): Promise<void> {
+    return this.slots.get(seat.index)!.banner.enter(y, emotion, text, { height: y === 71 ? BANNER_H : this.rowH, ...o });
+  }
+
+  /** Matches the seats to who's sitting in them; returns the slots of anyone who left. */
+  private sync(seats: Seat[]): Slot[] {
+    const left: Slot[] = [];
+    for (const s of seats) {
+      if (s.index === this.me) continue;
+      const slot = this.slots.get(s.index);
+      const who = s.vacant ? null : (s.character as Character);
+      if (slot && slot.character === who) continue;
+      if (slot) {
+        this.slots.delete(s.index);
+        left.push(slot);
+      }
+      if (who) {
+        const p = this.pos(s.index);
+        const table = new OpponentSeat(this.layers, this.spots[p], who);
+        table.setVisible(false);
+        this.slots.set(s.index, { character: who, table, banner: new Banner(this.bannerLayer, who, p % 2 === 1), gone: false });
+      }
+    }
+    return left;
   }
 
   private updateCoins(seats: Seat[]): void {
     for (const s of seats) {
-      if (s.character) this.seats[s.index].setCoins(s.coins, s.busted);
-      else this.panel.setCoins(s.coins, s.bet);
+      if (s.index === this.me) this.panel.setCoins(s.coins, s.paid);
+      else this.slots.get(s.index)?.table.setCoins(s.coins, s.busted);
     }
   }
 
-  private line(seat: Seat, key: Exclude<keyof Character['lines'], 'busted'>, n?: number): string {
-    return seat.character!.lines[key].replace('{n}', String(n ?? '')).replace('{s}', n === 1 ? '' : 's');
+  private allInLine(seat: Seat): string {
+    return seat.character?.lines.allIn ?? 'All in!';
+  }
+
+  private line(seat: Seat, key: Exclude<keyof Character['lines'], 'busted' | 'allIn'>, n?: number): string {
+    return seat.character!.lines[key].replaceAll('{n}', String(n ?? '')).replaceAll('{s}', n === 1 ? '' : 's');
   }
 
   private info(seat: Seat, betShown = true): string {
-    return `Change:${5 - seat.holdCount}  Bet:${betShown ? seat.bet : '--'}`;
+    return `Change:${5 - seat.holdCount}  Bet:${betShown ? seat.paid : '--'}`;
+  }
+
+  private async clearBanners(): Promise<void> {
+    for (const slot of this.slots.values()) {
+      slot.banner.leave();
+      await frames(1);
+    }
   }
 
   // --- Seating -----------------------------------------------------------------------------------
-  /** Greeting cut-in (not in the SWF): each new arrival says hello as they take their seat. */
-  /** Stacked in seat rows like the bet round, then cleared together. */
+  /** Greeting cut-in (not in the SWF): each new arrival says hello as they take their seat.
+   *  Stacked in seat rows like the bet round, then cleared together. Anyone who left fades out first. */
   async seated(joined: Seat[], seats: Seat[]): Promise<void> {
+    const left = this.sync(seats);
+    for (const slot of left) {
+      slot.banner.remove();
+      if (!slot.gone) await slot.table.fadeOut();
+      slot.table.remove();
+    }
     this.updateCoins(seats);
-    const greeters = joined.filter((s) => s.character);
+    const greeters = joined.filter((s) => s.character && this.slots.has(s.index));
     for (const s of greeters) {
-      const table = this.seats[s.index];
+      const table = this.slots.get(s.index)!.table;
       table.setVisible(true);
       await table.setPose('normal');
-      await this.banners[s.index].enter((s.index - 1) * 64, 'neutral', this.line(s, 'greeting'));
+      await this.banner(s, this.rowY(s), 'neutral', this.line(s, 'greeting'));
       await frames(24);
     }
     await frames(40);
-    for (const s of greeters) {
-      this.banners[s.index].leave();
-      await frames(1);
-    }
+    await this.clearBanners();
     await frames(20);
   }
 
+  /** A message on the dealer's sign (table changes, ante ups). */
+  async announce(text: string): Promise<void> {
+    await this.dealer.say(text);
+    await frames(70);
+    await this.dealer.out();
+  }
+
   // --- Round setup and deal ----------------------------------------------------------------------
-  async roundStart(round: number, seats: Seat[]): Promise<void> {
-    if ((round - 1) % 4 === 0) {
+  get hasPlayer(): boolean {
+    return this.me >= 0;
+  }
+
+  async roundStart(round: number, seats: Seat[], ante: number): Promise<void> {
+    this.round = round;
+    this.opts.onRound?.();
+    if ((round - 1) % 4 === 0 || !this.ante) {
       if (round > 1) this.bgmTrack = (this.bgmTrack % 3) + 1;
       playBgm(`bgm${this.bgmTrack}` as Music);
     }
     this.result.forEach((r) => (r.textContent = ''));
-    for (const s of seats.slice(1)) {
-      const seat = this.seats[s.index];
-      seat.setVisible(!s.busted);
+    for (const s of seats) {
+      const slot = this.slots.get(s.index);
+      if (!slot) continue;
+      slot.table.setVisible(!s.busted);
       if (s.busted) continue;
-      await seat.setPose('normal');
-      seat.clearTable();
-      seat.showBet(s.bet);
+      await slot.table.setPose('normal');
+      slot.table.clearTable();
+      slot.table.showBet(s.bet);
     }
     this.panel.set('normal');
     this.hand.hideAll();
     this.updateCoins(seats);
-    await this.dealer.say(`Round ${round}`);
+    await this.dealer.say(this.opts.roundLimit ? `Round ${round}/${this.opts.roundLimit}` : `Round ${round}`);
+    if (this.ante && ante !== this.ante) {
+      await frames(30);
+      play('bell');
+      await this.dealer.say2(`Ante ${ante}!`);
+      await frames(30);
+    }
+    this.ante = ante;
   }
 
   async dealPlayer(hand: Card[]): Promise<void> {
@@ -116,28 +289,32 @@ export class TableView implements MatchView {
     await this.hand.reflip(hand);
   }
 
-  async dealOpponents(): Promise<void> {
-    for (const s of this.seats.slice(1)) if (s.currentPose === 'normal') await s.setPose('card');
+  async dealOpponents(seats: Seat[]): Promise<void> {
+    if (this.me < 0) await frames(20);
+    for (const s of seats) {
+      const t = this.slots.get(s.index)?.table;
+      if (t && !s.busted && t.currentPose === 'normal') await t.setPose('card');
+    }
     await frames(1);
     await this.dealer.out();
   }
 
   // --- Card swap ---------------------------------------------------------------------------------
   async opponentSwap(seat: Seat, swapped: number, tell: boolean): Promise<void> {
-    const banner = this.banners[seat.index];
+    const slot = this.slots.get(seat.index)!;
     const text = swapped ? this.line(seat, 'swap', swapped) : this.line(seat, 'keep');
-    await banner.enter(71, 'neutral', text);
+    await this.banner(seat, 71, 'neutral', text);
     await frames(3);
     play('card');
-    this.seats[seat.index].showSwapped(swapped);
+    slot.table.showSwapped(swapped);
     await frames(31);
     if (tell) {
-      await banner.swapFace('tell');
+      await slot.banner.swapFace('tell');
       await frames(26);
     } else {
       await frames(16);
     }
-    await banner.leave();
+    await slot.banner.leave();
   }
 
   async askHolds(_hand: Card[], hint: boolean[]): Promise<boolean[]> {
@@ -165,29 +342,34 @@ export class TableView implements MatchView {
   }
 
   // --- Betting -----------------------------------------------------------------------------------
-  async betRoundStart(): Promise<void> {
+  async betRoundStart(seats: Seat[], opener: number): Promise<void> {
     await this.dealer.say('Bet Round');
     await frames(30);
     await this.dealer.out();
-  }
-
-  async opponentWaits(seat: Seat): Promise<void> {
-    await this.banners[seat.index].enter((seat.index - 1) * 64, 'neutral', '……', { info: this.info(seat, false) });
-    await frames(23);
+    // Rows above the opener wait their turn ("……"); seats all-in for the ante just watch.
+    const order = seats.filter((s) => this.slots.has(s.index) && !s.busted).sort((a, b) => this.pos(a.index) - this.pos(b.index));
+    for (const s of order) {
+      if (s.allIn) {
+        await this.banner(s, this.rowY(s), 'neutral', this.allInLine(s), { info: this.info(s) });
+        await frames(23);
+      } else if (opener !== this.me && this.pos(s.index) < this.pos(opener) && !s.dropped) {
+        await this.banner(s, this.rowY(s), 'neutral', '……', { info: this.info(s, false) });
+        await frames(23);
+      }
+    }
   }
 
   async opponentBet(seat: Seat, action: BetAction): Promise<void> {
-    const banner = this.banners[seat.index];
-    const table = this.seats[seat.index];
-    const y = (seat.index - 1) * 64;
+    const table = this.slots.get(seat.index)!.table;
+    const y = this.rowY(seat);
     play(BET_SOUND[action]);
     if (action === 0) {
       table.setPose('drop');
       table.ocard.play(6, 8);
-      await banner.enter(y, 'lose', this.line(seat, 'drop'), { dim: true, info: this.info(seat) });
+      await this.banner(seat, y, 'lose', this.line(seat, 'drop'), { dim: true, info: this.info(seat) });
     } else {
       const key = action === 1 ? 'call' : action === 2 ? 'raise' : 'raise2';
-      await banner.enter(y, 'neutral', this.line(seat, key), { info: this.info(seat) });
+      await this.banner(seat, y, 'neutral', seat.allIn ? this.allInLine(seat) : this.line(seat, key), { info: this.info(seat) });
       table.showBet(seat.bet);
     }
     // The SWF only refreshed these at showdown; showing coins as they're paid avoids reading stale counts.
@@ -195,26 +377,23 @@ export class TableView implements MatchView {
     await frames(24);
   }
 
-  async askBet(options: PlayerBet[], seats: Seat[]): Promise<PlayerBet> {
+  async askBet(options: PlayerBet[], seats: Seat[], _rate: number, allIn: boolean): Promise<PlayerBet> {
     this.updateCoins(seats);
     if (autoplay) return options.includes('call') ? 'call' : options[0];
-    return this.buttons.choose(options);
+    return this.buttons.choose(options, false, allIn ? { call: 'All In' } : {});
   }
 
   async playerBet(seat: Seat, action: PlayerBet): Promise<void> {
     play(action === 'drop' ? 'drop' : action);
     if (action === 'drop') this.panel.set('drop');
-    this.panel.setCoins(seat.coins, seat.bet);
+    this.panel.setCoins(seat.coins, seat.paid);
     await frames(21);
   }
 
   async betRoundEnd(seats: Seat[]): Promise<void> {
     this.updateCoins(seats);
     await frames(21);
-    for (const b of this.banners.slice(1)) {
-      b.leave();
-      await frames(1);
-    }
+    await this.clearBanners();
     await frames(20);
   }
 
@@ -226,89 +405,115 @@ export class TableView implements MatchView {
   }
 
   async reveal(seat: Seat): Promise<void> {
-    if (!seat.character) {
+    if (seat.index === this.me) {
       play(seat.dropped ? 'drop' : 'card');
       this.panel.set(seat.dropped ? 'dropOpen' : 'open', seat.dropped ? '……' : handName(seat.score));
       await frames(25);
       return;
     }
-    const banner = this.banners[seat.index];
-    const y = (seat.index - 1) * 64;
+    const slot = this.slots.get(seat.index);
+    if (!slot) return;
+    const y = this.rowY(seat);
     if (seat.dropped) {
       play('drop');
-      await banner.enter(y, 'lose', '……', { dim: true });
+      await this.banner(seat, y, 'lose', '……', { dim: true });
     } else {
       play('card');
-      await this.seats[seat.index].setPose('normal');
-      this.seats[seat.index].ocard.play(3, 5);
-      await banner.enter(y, 'neutral', handName(seat.score), { hand: seat.hand });
+      await slot.table.setPose('normal');
+      slot.table.ocard.play(3, 5);
+      await this.banner(seat, y, 'neutral', handName(seat.score), { hand: seat.hand });
     }
     await frames(24);
   }
 
   async awaitMatch(): Promise<void> {
-    if (autoplay) return frames(20);
+    if (autoplay || this.me < 0) return frames(60);
     await this.buttons.choose(['next'], true);
   }
 
-  async roundWinner(winner: Seat, seats: Seat[], allFolded: boolean): Promise<void> {
-    for (const b of this.banners.slice(1)) {
-      b.leave();
-      await frames(1);
+  async roundWinner(winners: Seat[], seats: Seat[], allFolded: boolean): Promise<void> {
+    await this.clearBanners();
+    for (const s of seats) {
+      const slot = this.slots.get(s.index);
+      if (!slot || s.busted) continue;
+      const won = winners.includes(s);
+      await slot.table.setPose(won ? 'win' : 'drop');
+      if (won && allFolded) slot.table.ocard.play(6, 8);
     }
-    for (const s of seats.slice(1)) {
-      if (s.busted) continue;
-      await this.seats[s.index].setPose(s === winner ? 'win' : 'drop');
-      if (s === winner && allFolded) this.seats[s.index].ocard.play(6, 8);
-    }
-    this.panel.set(winner.index === 0 ? 'win' : 'drop');
-    await this.dealer.say(`${winner.character?.name ?? player.name} Win!`);
+    this.panel.set(winners.some((w) => w.index === this.me) ? 'win' : 'drop');
+    await this.dealer.say(winners.length === 1 ? `${seatName(winners[0])} Win!` : 'Split Pot!');
     await frames(48);
   }
 
-  async payout(_winner: Seat, pot: number, seats: Seat[]): Promise<void> {
+  async payout(winners: Seat[], won: number[], seats: Seat[]): Promise<void> {
     this.updateCoins(seats);
-    for (const s of seats.slice(1)) if (!s.busted) this.seats[s.index].showBet(0);
+    for (const s of seats) if (!s.busted) this.slots.get(s.index)?.table.showBet(0);
     play('coin');
-    await this.dealer.say2(`Coin +${pot}`);
+    const shares = winners.map((w) => won[w.index]);
+    const text = winners.length === 1 ? `Coin +${shares[0]}`
+      : shares.every((x) => x === shares[0]) ? `+${shares[0]} each`
+      : `Coin +${shares.reduce((a, b) => a + b, 0)}`;
+    await this.dealer.say2(text);
     await frames(61);
+    // Side pots the main winners weren't in (or a bet nobody could call, handed back).
+    for (const s of seats) {
+      if (winners.includes(s) || !won[s.index]) continue;
+      await this.dealer.say2(`${s.dropped ? 'Back to' : 'Side Pot:'} ${seatName(s)} +${won[s.index]}`);
+      await frames(61);
+    }
     await this.dealer.out();
   }
 
   /** Bust cut-in (not in the SWF): each player who went broke gets a last word and their finishing place. */
-  async busted(seats: Seat[], out: Seat[], place: number): Promise<void> {
+  async busted(seats: Seat[], out: Seat[], places: number[]): Promise<void> {
     this.updateCoins(seats);
-    const ordinal = ['', '1st', '2nd', '3rd', '4th'][place];
-    for (const s of out) {
-      if (!s.character) continue; // the player busting ends the match; Game Set covers it
-      const table = this.seats[s.index];
-      const banner = this.banners[s.index];
-      await table.setPose('drop');
+    // Worst place first: 53rd, then 52nd, then 51st.
+    const order = out.map((s, i) => [s, places[i]] as const).sort((a, b) => b[1] - a[1]);
+    for (const [s, place] of order) {
+      const slot = this.slots.get(s.index);
+      if (!slot || !s.character) continue; // the player going out is handled by the game itself
+      await slot.table.setPose('drop');
       play('drop');
-      await banner.enter(71, 'lose', s.character.lines.busted ?? s.character.lines.drop, {
-        dim: true, info: `OUT  ${ordinal} place`, bust: true,
+      await this.banner(s, 71, 'lose', s.character.lines.busted ?? s.character.lines.drop, {
+        dim: true, info: `OUT  ${ordinal(place)} place`, bust: true,
       });
       await frames(110);
-      await banner.leave();
-      await table.fadeOut();
+      await slot.banner.leave();
+      await slot.table.fadeOut();
+      slot.gone = true;
     }
-    for (const s of seats.slice(1)) {
-      if (s.busted) {
-        this.seats[s.index].setVisible(false);
-        this.banners[s.index].hide();
+    for (const s of seats) {
+      const slot = this.slots.get(s.index);
+      if (slot && s.busted) {
+        slot.table.setVisible(false);
+        slot.banner.hide();
       }
     }
   }
 
+  /** Spectating: someone went out at another table. Their cut-in, labelled with where it happened. */
+  async bustedElsewhere(character: Character, place: number, table: number): Promise<void> {
+    const banner = new Banner(this.bannerLayer, character, false);
+    play('drop');
+    await banner.enter(71, 'lose', character.lines.busted ?? character.lines.drop, {
+      height: BANNER_H, dim: true, info: `OUT  ${ordinal(place)} place  (Table ${table})`, bust: true,
+    });
+    await frames(110);
+    await banner.leave();
+    banner.remove();
+  }
+
   // --- Game set ----------------------------------------------------------------------------------
-  async gameSet(result: MatchResult, seats: Seat[]): Promise<void> {
+  async gameSet(summary: GameSummary, seats: Seat[]): Promise<void> {
     setBgmVolume(0.5);
-    for (const s of seats.slice(1)) {
-      const seat = this.seats[s.index];
-      seat.showBet(0);
+    this.spectateBar?.remove();
+    for (const s of seats) {
+      const slot = this.slots.get(s.index);
+      if (!slot) continue;
+      slot.table.showBet(0);
       if (!s.busted) {
-        await seat.setPose('normal');
-        seat.clearTable();
+        await slot.table.setPose('normal');
+        slot.table.clearTable();
       }
     }
     this.panel.set('normal');
@@ -319,27 +524,26 @@ export class TableView implements MatchView {
     play('bell');
     await this.dealer.say('Game Set!', null);
     await frames(120);
-    const winner = seats[result.winner];
-    await this.dealer.say2(`${winner.character?.name ?? player.name} Win!`);
+    await this.dealer.say2(`${seatName(seats[summary.winner])} Win!`);
     await frames(11);
-    for (const s of seats.slice(1)) {
-      const seat = this.seats[s.index];
-      seat.setVisible(true);
-      await seat.setPose(result.places[s.index] === 1 ? 'win' : 'drop');
+    for (const s of seats) {
+      const slot = this.slots.get(s.index);
+      if (!slot) continue;
+      slot.table.setVisible(true);
+      await slot.table.setPose(summary.champions.has(s.index) ? 'win' : 'drop');
     }
-    const won = result.places[0] === 1;
-    this.panel.set(won ? 'win' : 'drop');
-    play(won ? 'win' : 'lose');
+    if (this.me >= 0) {
+      this.panel.set(summary.won ? 'win' : 'drop');
+      play(summary.won ? 'win' : 'lose');
+    }
     await frames(121);
-    const place = ['', '1st', '2nd', '3rd', '4th'][result.places[0]];
-    this.result[0].textContent = `                 - Result -\n Ranking\n Round\n Coin\n BestHand    "${handName(result.bestHand)}"`;
-    this.result[1].textContent = `\n${place}\n${result.rounds}\n${seats[0].coins}`;
-    this.result[2].textContent = '\n Win\n Lose\n Drop';
-    this.result[3].textContent = `\n${result.wins}\n${result.losses}\n${result.drops}`;
+    this.result[0].textContent = `                 - Result -\n${summary.left.map(([k]) => ` ${k}`).join('\n')}`;
+    this.result[1].textContent = `\n${summary.left.map(([, v]) => v).join('\n')}`;
+    this.result[2].textContent = `\n${summary.right.map(([k]) => ` ${k}`).join('\n')}`;
+    this.result[3].textContent = `\n${summary.right.map(([, v]) => v).join('\n')}`;
     await frames(121);
     await this.dealer.say2('Thank You!');
     await frames(11);
     await this.dealer.button('Thank You!');
   }
 }
-

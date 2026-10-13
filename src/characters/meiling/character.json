@@ -1,0 +1,77 @@
+{
+  "id": "meiling",
+  "name": "Meiling",
+  "fullName": "Hong Meiling",
+  "order": 19,
+  "stats": {
+    "strictness": 2,
+    "aggression": 5,
+    "unpredictability": 2,
+    "comment": "Why do they just keep staring blankly? Won't they just show their cards already? If this tournament goes on much longer, she'll fall asleep."
+  },
+  "look": {
+    "color": "#2e9e5b",
+    "face": {
+      "x": 0.517,
+      "y": 0.164,
+      "size": 0.142
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      5,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 74,
+    "bluffType": 1,
+    "reading": 1,
+    "changeType": 3,
+    "tell": {
+      "when": "twoPairOrTrips",
+      "chance": 40,
+      "reveals": 2
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Hiya! This won't take long, right?",
+    "swap": "{n}, please!",
+    "keep": "Holding firm!",
+    "call": "Call!",
+    "raise": "Raise!",
+    "raise2": "Hyaaah! Raise two!",
+    "drop": "Zzz...",
+    "allIn": "All in! Hyaaah!",
+    "busted": "Sakuya's going to kill me for this..."
+  }
+}

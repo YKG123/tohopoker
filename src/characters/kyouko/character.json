@@ -1,0 +1,77 @@
+{
+  "id": "kyouko",
+  "name": "Kyouko",
+  "fullName": "Kyouko Kasodani",
+  "order": 47,
+  "stats": {
+    "strictness": 3,
+    "aggression": 3,
+    "unpredictability": 1,
+    "comment": "Kyouko doesn't know how she got here, or why she decided to play. Don't let life throw you around!"
+  },
+  "look": {
+    "color": "#5aa88a",
+    "face": {
+      "x": 0.625,
+      "y": 0.149,
+      "size": 0.158
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      4,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      3,
+      5,
+      6,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 62,
+    "bluffType": 1,
+    "reading": 2,
+    "changeType": 3,
+    "tell": {
+      "when": "twoPairOrTrips",
+      "chance": 30,
+      "reveals": 2
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "GOOD EVENING!",
+    "swap": "{n}! {n}! {n}!",
+    "keep": "KEEPING THESE!",
+    "call": "CALL! Call... call...",
+    "raise": "RAISE!",
+    "raise2": "RAISE TWO! Two... two...",
+    "drop": "Fold... fold..",
+    "allIn": "ALL IN! in...",
+    "busted": "Bye... bye... bye..."
+  }
+}

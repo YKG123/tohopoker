@@ -1,0 +1,77 @@
+{
+  "id": "seiran",
+  "name": "Seiran",
+  "fullName": "Seiran",
+  "order": 61,
+  "stats": {
+    "strictness": 1,
+    "aggression": 1,
+    "unpredictability": 2,
+    "comment": "Seiran is on leave from the Lunar Capital. She's only here to relax."
+  },
+  "look": {
+    "color": "#3a5ac2",
+    "face": {
+      "x": 0.541,
+      "y": 0.273,
+      "size": 0.153
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      4,
+      5,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      1,
+      2,
+      4,
+      5,
+      6,
+      7,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 54,
+    "bluffType": 1,
+    "reading": 1,
+    "changeType": 3,
+    "tell": {
+      "when": "noPair",
+      "chance": 50,
+      "reveals": 0
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Day off! Let's play!",
+    "swap": "{n}, please!",
+    "keep": "I'll keep these.",
+    "call": "Call~",
+    "raise": "Raise!",
+    "raise2": "Raise two! Pew pew!",
+    "drop": "Too much work. I fold.",
+    "allIn": "All in! Fire!",
+    "busted": "Back to pounding mochi..."
+  }
+}

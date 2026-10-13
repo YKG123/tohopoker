@@ -1,13 +1,13 @@
 // Image check: loads every UI frame and character sprite, then autoplays matches while checking that
 // every <img> and background image on the stage actually loaded. Needs the dev server running.
-// Usage: node tools/check-images.mjs [url=http://localhost:5199] [matches=2]
+// Usage: node tools/check-images.mjs [url=http://localhost:5199] [matches=5]
 import { chromium } from 'playwright-core';
 import { readdirSync } from 'node:fs';
 import { homedir } from 'node:os';
 const base = `${homedir()}/.cache/ms-playwright`;
 const dir = readdirSync(base).find((d) => d.startsWith('chromium-'));
 const url = process.argv[2] ?? 'http://localhost:5199';
-const matches = Number(process.argv[3] ?? 2);
+const matches = Number(process.argv[3] ?? 5);
 const browser = await chromium.launch({ executablePath: `${base}/${dir}/chrome-linux64/chrome` });
 const page = await browser.newPage({ viewport: { width: 800, height: 600 } });
 const failedRequests = new Set();
@@ -39,12 +39,19 @@ console.log(`files: ${fileReport.checked} checked, ${fileReport.bad.length} brok
 const problems = new Map();
 for (let m = 0; m < matches; m++) {
   await page.goto(`${url}/?speed=25&autoplay`, { waitUntil: 'networkidle' });
-  await page.evaluate(() => localStorage.clear());
+  // Each match uses a different table size (1-5 opponents), ten rounds long.
+  await page.evaluate((n) => {
+    localStorage.clear();
+    localStorage.setItem('touhou-poker-face-up/v1', JSON.stringify({ settings: { bgm: true, quality: 'high', cash: { opponents: n, rounds: 10 } } }));
+  }, 1 + (m % 5));
+  await page.reload({ waitUntil: 'networkidle' });
   const box = await page.locator('.stage').boundingBox();
   const z = box.width / 400;
   const click = (x, y) => page.mouse.click(box.x + x * z, box.y + y * z);
   await page.waitForTimeout(800);
   await click(260, 130);
+  await page.waitForTimeout(400);
+  await click(342, 250); // Start (cash game)
   await page.waitForTimeout(400);
   await click(380, 180); // Auto
   const end = Date.now() + 180000;

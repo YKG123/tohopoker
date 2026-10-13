@@ -1,0 +1,77 @@
+{
+  "id": "doremy",
+  "name": "Doremy",
+  "fullName": "Doremy Sweet",
+  "order": 63,
+  "stats": {
+    "strictness": 2,
+    "aggression": 3,
+    "unpredictability": 3,
+    "comment": "There is no winning against Doremy. Even if you don't lose to her, you'll dream about it for weeks."
+  },
+  "look": {
+    "color": "#3a4aa8",
+    "face": {
+      "x": 0.545,
+      "y": 0.166,
+      "size": 0.154
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      5,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      3,
+      5,
+      6,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 66,
+    "bluffType": 2,
+    "reading": 1,
+    "changeType": 2,
+    "tell": {
+      "when": "twoPairOrTrips",
+      "chance": 40,
+      "reveals": 2
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Sweet dreams, everyone.",
+    "swap": "{n}.",
+    "keep": "These are lovely.",
+    "call": "Call.",
+    "raise": "Raise.",
+    "raise2": "Raise two.",
+    "drop": "...zzz...",
+    "allIn": "All in.",
+    "busted": "Time to wake up, I suppose."
+  }
+}

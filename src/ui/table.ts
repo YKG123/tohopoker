@@ -1,4 +1,5 @@
-// Table pieces, each at the SWF's coordinates. Seat 1 = left, 2 = middle, 3 = right (mirrored).
+// Table pieces, at the SWF's coordinates for the original three opponents (left, middle, right mirrored);
+// other table sizes spread the same pieces across the top of the table.
 import type { Character } from '../characters';
 import type { Card } from '../engine/cards';
 import type { Emotion } from '../engine/types';
@@ -7,10 +8,50 @@ import { paintFace, placeFigure } from './portrait';
 import { Clip, el, frames, place, textField } from './stage';
 
 // --- Opponent at the table (In_E1-3, In_Coin1-3, In_DCard1-3, In_O_Card1-3) -------------------------
-const SEAT_X = [0, 66, 200, 334]; // face center per seat
-const ON_TABLE: [number, number][] = [[0, 0], [75, 158], [190, 155], [330, 158]];
-const COIN_AT: [number, number][] = [[0, 0], [5, 145], [133, 140], [395, 145]];
-const COIN_TEXT_X = [0, 3, 161, 318];
+/** Where one opponent sits: face center x, face size, and whether they face the table mirrored. */
+export interface SeatSpot {
+  x: number;
+  faceY: number;
+  faceH: number;
+  /** Size of the coins and table cards relative to the original three-seat table. */
+  scale: number;
+  flip: boolean;
+  coinAt: [number, number];
+  onTable: [number, number];
+  /** Coin label box: left edge and width. */
+  label: [number, number];
+  /** Draws its own label box (the table art only has boxes for the original three seats). */
+  boxed?: boolean;
+}
+
+// The original three seats, at the SWF's coordinates.
+const SWF_SPOTS: SeatSpot[] = [
+  { x: 66, faceY: 52, faceH: 40, scale: 1, flip: false, coinAt: [5, 145], onTable: [75, 158], label: [3, 78] },
+  { x: 200, faceY: 52, faceH: 40, scale: 1, flip: false, coinAt: [133, 140], onTable: [190, 155], label: [161, 78] },
+  { x: 334, faceY: 52, faceH: 40, scale: 1, flip: true, coinAt: [395, 145], onTable: [330, 158], label: [318, 78] },
+];
+
+/** Seat spots for `count` opponents across the top of the table (1-6), left to right. */
+export function seatLayout(count: number): SeatSpot[] {
+  if (count === 3) return SWF_SPOTS;
+  const faceH = [40, 40, 40, 40, 36, 32, 28][count];
+  const k = faceH / 40;
+  return Array.from({ length: count }, (_, i) => {
+    const x = Math.round((400 * (i + 0.5)) / count);
+    const center = Math.abs(x - 200) < 1;
+    const flip = x > 200;
+    // The rail curves: things sit a little higher toward the middle.
+    const edge = Math.min(1, Math.abs(x - 200) / 134);
+    const w = Math.min(78, Math.floor(400 / count) - 4);
+    return {
+      x, faceY: 52 + (40 - faceH) * 0.6, faceH, scale: k, flip,
+      coinAt: [x + (flip ? 61 : center ? -67 : -61) * k, 140 + 5 * edge],
+      onTable: [x + (flip ? -4 : center ? -10 : 9) * k, 155 + 3 * edge],
+      label: [Math.max(2, Math.min(400 - w - 2, x - w / 2)), w],
+      boxed: true,
+    };
+  });
+}
 
 export type Pose = 'normal' | 'card' | 'drop' | 'win';
 
@@ -23,6 +64,7 @@ export interface SeatLayers {
 const POSE_EMOTION: Record<Pose, Emotion> = { normal: 'neutral', card: 'neutral', drop: 'lose', win: 'win' };
 
 export class OpponentSeat {
+  private wrap: HTMLDivElement;
   private figure: HTMLImageElement;
   private companion?: HTMLImageElement;
   private handFan: Clip;
@@ -32,31 +74,34 @@ export class OpponentSeat {
   private coinText: HTMLDivElement;
   private pose: Pose = 'normal';
 
-  constructor(layers: SeatLayers, readonly seat: number, readonly character: Character) {
-    const flip = seat === 3;
-    const wrap = el('div', `figure seat${seat}`, layers.figures);
+  constructor(layers: SeatLayers, readonly spot: SeatSpot, readonly character: Character) {
+    const { flip, x, scale: k } = spot;
+    const wrap = (this.wrap = el('div', 'figure', layers.figures));
     if (character.companionArt) this.companion = el('img', 'companion', wrap);
     this.figure = el('img', 'portrait', wrap);
-    this.handFan = new Clip(wrap, 'dcard', SEAT_X[seat] + (flip ? 34 : -34), 118, { flip, scaleX: 1.15, scaleY: 1.15 });
-    const [cx, cy] = COIN_AT[seat];
-    this.coins = new Clip(layers.coins, 'coin', cx, cy, { flip });
-    const [tx, ty] = ON_TABLE[seat];
-    this.ocard = new Clip(layers.onTable, 'ocard', tx, ty, { flip });
-    this.dcard = new Clip(layers.onTable, 'dcard', tx, ty, { flip });
-    this.coinText = textField(layers.coins, 'coin-label', COIN_TEXT_X[seat], 1, 78, 22);
+    this.handFan = new Clip(wrap, 'dcard', x + (flip ? 34 : -34) * k, spot.faceY + 66 * k, { flip, scaleX: 1.15 * k, scaleY: 1.15 * k });
+    const [cx, cy] = spot.coinAt;
+    this.coins = new Clip(layers.coins, 'coin', cx, cy, { flip, scaleX: k, scaleY: k });
+    const [tx, ty] = spot.onTable;
+    this.ocard = new Clip(layers.onTable, 'ocard', tx, ty, { flip, scaleX: k, scaleY: k });
+    this.dcard = new Clip(layers.onTable, 'dcard', tx, ty, { flip, scaleX: k, scaleY: k });
+    this.coinText = textField(layers.coins, `coin-label${spot.boxed ? ' boxed' : ''}`, spot.label[0], 1, spot.label[1], 22);
   }
 
   async setPose(pose: Pose): Promise<void> {
     this.pose = pose;
     const c = this.character;
+    const { x, faceY, faceH, flip, scale: k } = this.spot;
     const emotion = POSE_EMOTION[pose];
-    // Seat 3 faces the table mirrored, as in the SWF (_xscale = -100).
-    const mirror = this.seat === 3 ? 'scaleX(-1)' : '';
-    await placeFigure(this.figure, c.art[emotion], c.look.face, SEAT_X[this.seat], 52, 40);
+    // Seats right of center face the table mirrored, as seat 3 does in the SWF (_xscale = -100).
+    const mirror = flip ? 'scaleX(-1)' : '';
+    await placeFigure(this.figure, c.art[emotion], c.look.face, x, faceY, faceH);
     this.figure.style.transform = mirror;
+    // Widest figures stand at the back, so big wings and sleeves never cover a narrower neighbor's face.
+    if (!this.wrap.style.zIndex) this.wrap.style.zIndex = String(Math.max(1, 5000 - Math.round(parseFloat(this.figure.style.width))));
     if (this.companion && c.companionArt && c.look.companion) {
-      const side = this.seat === 3 ? -1 : 1;
-      await placeFigure(this.companion, c.companionArt[emotion], c.look.companion.face, SEAT_X[this.seat] + 46 * side, 98, 24);
+      const side = flip ? -1 : 1;
+      await placeFigure(this.companion, c.companionArt[emotion], c.look.companion.face, x + 46 * side * k, faceY + 46 * k, 24 * k);
       this.companion.style.transform = mirror;
     }
     if (pose === 'card') this.handFan.show(7);
@@ -84,23 +129,28 @@ export class OpponentSeat {
   }
 
   setCoins(coins: number, busted: boolean): void {
-    this.coinText.textContent = busted ? 'OUT' : `COIN:${coins}`;
+    fitText(this.coinText, busted ? 'OUT' : `COIN:${coins}`, 16, 8);
   }
 
   setVisible(on: boolean): void {
-    for (const e of [this.figure.parentElement!, this.coins.img, this.dcard.img, this.ocard.img]) {
+    for (const e of [this.figure.parentElement!, this.coins.img, this.dcard.img, this.ocard.img, this.coinText]) {
       e.style.display = on ? '' : 'none';
     }
     this.figure.parentElement!.classList.remove('gone');
   }
 
-  /** Fades the character out of their seat after busting. */
+  /** Fades the character out of their seat after busting (or moving to another table). */
   async fadeOut(): Promise<void> {
     this.figure.parentElement!.classList.add('gone');
     this.coins.hide();
     this.dcard.hide();
     this.ocard.hide();
+    this.coinText.style.display = 'none';
     await frames(26);
+  }
+
+  remove(): void {
+    for (const e of [this.figure.parentElement!, this.coins.img, this.dcard.img, this.ocard.img, this.coinText]) e.remove();
   }
 }
 
@@ -115,6 +165,14 @@ const FACE_W = 190;
 const BUBBLE_PATH = 'M22 1 L203 1 L209 7 L209 30 L203 36 L40 36 L2 35 L22 24 L22 7 Z';
 const BUBBLE_SVG = `<svg class="bubble-shape" viewBox="0 0 211 37" width="211" height="37" aria-hidden="true"><path d="${BUBBLE_PATH}" fill="#fff" stroke="#333" stroke-width="2" stroke-linejoin="round"/></svg>`;
 
+export interface BannerOptions {
+  dim?: boolean;
+  info?: string;
+  /** Shows the hand (the Open layout). */
+  hand?: Card[];
+  bust?: boolean;
+}
+
 export class Banner {
   readonly root: HTMLDivElement;
   private face: HTMLDivElement;
@@ -123,16 +181,20 @@ export class Banner {
   private info: HTMLDivElement;
   private cards: HTMLDivElement;
 
+  private inner: HTMLDivElement;
+
   constructor(parent: HTMLElement, readonly character: Character, mirrored = false) {
     this.root = el('div', `banner${mirrored ? ' mirrored' : ''}`, parent);
     this.root.style.setProperty('--accent', character.look.color);
     el('div', 'banner-bg', this.root);
-    this.face = el('div', 'banner-face', this.root);
-    this.bubble = el('div', 'banner-bubble', this.root);
+    // The original 400x64 layout; scaled down into shorter rows when more than three opponents share the stack.
+    this.inner = el('div', 'banner-inner', this.root);
+    this.face = el('div', 'banner-face', this.inner);
+    this.bubble = el('div', 'banner-bubble', this.inner);
     this.bubble.innerHTML = BUBBLE_SVG;
     this.text = el('div', 'banner-text', this.bubble);
-    this.info = el('div', 'banner-info', this.root);
-    this.cards = el('div', 'banner-cards', this.root);
+    this.info = el('div', 'banner-info', this.inner);
+    this.cards = el('div', 'banner-cards', this.inner);
     this.root.style.display = 'none';
   }
 
@@ -142,9 +204,12 @@ export class Banner {
   }
 
   /** Wipes in from the face side, like the SWF's 8-frame reveal. `hand` switches to the Open layout. */
-  async enter(y: number, emotion: Emotion, text: string, opts: { dim?: boolean; info?: string; hand?: Card[]; bust?: boolean } = {}): Promise<void> {
+  async enter(y: number, emotion: Emotion, text: string, opts: BannerOptions & { height?: number } = {}): Promise<void> {
     await this.setFace(emotion);
+    const h = opts.height ?? BANNER_H;
     this.root.style.top = `${y}px`;
+    this.root.style.height = `${h + 1}px`;
+    this.inner.style.transform = h === BANNER_H ? '' : `scale(${h / BANNER_H})`;
     this.root.classList.toggle('dim', !!opts.dim);
     this.root.classList.toggle('bust', !!opts.bust);
     this.root.classList.toggle('open', !!opts.hand);
@@ -172,6 +237,10 @@ export class Banner {
 
   hide(): void {
     this.root.style.display = 'none';
+  }
+
+  remove(): void {
+    this.root.remove();
   }
 }
 
@@ -383,7 +452,8 @@ export class Buttons {
   }
 
   /** Shows the given buttons; resolves with the one pressed. */
-  async choose<T extends ButtonName>(names: T[], anywhere = false): Promise<T> {
+  /** `labels` relabels a button over its baked-in text (Call becomes All In). */
+  async choose<T extends ButtonName>(names: T[], anywhere = false, labels: Partial<Record<ButtonName, string>> = {}): Promise<T> {
     this.root.replaceChildren();
     const result = await new Promise<T>((resolve) => {
       for (const name of names) {
@@ -394,6 +464,7 @@ export class Buttons {
         img.draggable = false;
         const art = (state: string) => (img.src = uiUrl(ui(`btn-${name}-${state}`)));
         art('up');
+        if (labels[name]) el('span', 'button-label', b).textContent = labels[name];
         b.addEventListener('pointerenter', () => art('over'));
         b.addEventListener('pointerleave', () => art('up'));
         b.addEventListener('pointerdown', () => art('down'));

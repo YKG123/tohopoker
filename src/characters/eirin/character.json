@@ -64,13 +64,14 @@
     "randomBetting": false
   },
   "lines": {
-    "greeting": "Let's proceed methodically.",
+    "greeting": "Try not to fall behind.",
     "swap": "{n} card{s}.",
     "keep": "No exchange necessary.",
     "call": "Call.",
     "raise": "Raise.",
-    "raise2": "Raise two, as prescribed.",
+    "raise2": "Raise two.",
     "drop": "I'm out.",
-    "busted": "An unexpected diagnosis. I'm out."
+    "allIn": "All in.",
+    "busted": "Very well. I'm out."
   }
 }

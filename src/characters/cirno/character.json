@@ -1,0 +1,77 @@
+{
+  "id": "cirno",
+  "name": "Cirno",
+  "fullName": "Cirno",
+  "order": 17,
+  "stats": {
+    "strictness": 1,
+    "aggression": 5,
+    "unpredictability": 3,
+    "comment": "All in, all the time! If you keep hitting life hard, it's bound to hit back."
+  },
+  "look": {
+    "color": "#4aa8e0",
+    "face": {
+      "x": 0.44,
+      "y": 0.179,
+      "size": 0.18
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      5,
+      6,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      3,
+      4,
+      5,
+      5,
+      6,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7
+    ],
+    "raiseAvg": 70,
+    "bluffType": 2,
+    "reading": 1,
+    "changeType": 3,
+    "tell": {
+      "when": "straightOrBetter",
+      "chance": 50,
+      "reveals": 4
+    },
+    "randomBetting": true
+  },
+  "lines": {
+    "greeting": "I'm the strongest!",
+    "swap": "Gimme {n}!",
+    "keep": "Mine are already the best!",
+    "call": "Call!",
+    "raise": "Raise!",
+    "raise2": "Raise two! Strongest!",
+    "drop": "Hmph!",
+    "allIn": "All in! Obviously!",
+    "busted": "That's not fair! Rematch!"
+  }
+}

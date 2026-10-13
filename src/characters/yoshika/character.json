@@ -1,0 +1,77 @@
+{
+  "id": "yoshika",
+  "name": "Yoshika",
+  "fullName": "Yoshika Miyako",
+  "order": 48,
+  "stats": {
+    "strictness": 2,
+    "aggression": 1,
+    "unpredictability": 1,
+    "comment": "Slowly shambles her way through each hand. Without Seiga to bail her out, she's an easy target."
+  },
+  "look": {
+    "color": "#5a3a8a",
+    "face": {
+      "x": 0.747,
+      "y": 0.157,
+      "size": 0.138
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      5,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      1,
+      2,
+      4,
+      5,
+      6,
+      7,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 52,
+    "bluffType": 1,
+    "reading": 1,
+    "changeType": 3,
+    "tell": {
+      "when": "noPair",
+      "chance": 40,
+      "reveals": 0
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Uuu... cards...",
+    "swap": "{n}... uuu...",
+    "keep": "Keep... these...",
+    "call": "Call...",
+    "raise": "Raise... uuu...",
+    "raise2": "Raise... two... uuu!",
+    "drop": "Uuu... fold...",
+    "allIn": "All... in...!",
+    "busted": "Seiga... help..."
+  }
+}

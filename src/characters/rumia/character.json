@@ -1,0 +1,77 @@
+{
+  "id": "rumia",
+  "name": "Rumia",
+  "fullName": "Rumia",
+  "order": 16,
+  "stats": {
+    "strictness": 1,
+    "aggression": 3,
+    "unpredictability": 4,
+    "comment": "Keep your cards on the table, Rumia. It just looks silly when you hold them in your hands."
+  },
+  "look": {
+    "color": "#c9a227",
+    "face": {
+      "x": 0.477,
+      "y": 0.135,
+      "size": 0.164
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      4,
+      5,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      3,
+      5,
+      6,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 68,
+    "bluffType": 3,
+    "reading": 1,
+    "changeType": 1,
+    "tell": {
+      "when": "onePair",
+      "chance": 50,
+      "reveals": 1
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Is that so~?",
+    "swap": "{n} card{s}~",
+    "keep": "These are fine~",
+    "call": "Call~",
+    "raise": "Raise~",
+    "raise2": "Is that so? Raise two~",
+    "drop": "I can't see...",
+    "allIn": "All in~",
+    "busted": "Can I eat the dealer instead?"
+  }
+}

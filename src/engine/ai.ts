@@ -111,7 +111,7 @@ export function rollTell(ai: CharacterAI, score: number, random: Random = Math.r
   return tellTriggers(ai.tell.when, score) && roll(100, random) <= ai.tell.chance;
 }
 
-/** Table state the betting AI reads. Seat 0 is the player. */
+/** Table state the betting AI reads, one entry per seat. */
 export interface BetView {
   seat: number;
   score: number;
@@ -119,7 +119,9 @@ export interface BetView {
   maxRate: number;
   raiser: number;
   bet: number[];
+  /** Folded, broke or vacant. */
   dropped: boolean[];
+  /** Broke or vacant. */
   busted: boolean[];
   /** Seats that stood pat (swapped nothing). */
   allHold: boolean[];
@@ -133,7 +135,9 @@ export type BetAction = 0 | 1 | 2 | 3; // drop, call, raise 1, raise 2
 
 /** Returns the action plus whether the seat starts bluffing this round. */
 export function chooseBet(ai: CharacterAI, v: BetView, random: Random = Math.random): { action: BetAction; bluffing: boolean } {
-  const short = v.busted.filter(Boolean).length;
+  // Seats missing from a four-handed game (the SWF counted busted players, out of four seats). Bigger tables
+  // play like a full four-handed one.
+  const short = Math.max(0, 4 - v.busted.filter((b) => !b).length);
   let bluffing = v.bluffing;
   let L: number;
 
@@ -160,7 +164,7 @@ export function chooseBet(ai: CharacterAI, v: BetView, random: Random = Math.ran
       L = 3 + K * 2;
     }
     if (bluffing) L = v.rate < 3 ? 3 : v.rate < 4 ? 2 : 1;
-    if (L === 0 && ai.reading >= 2 && v.score > 1.1 && v.dropped.filter(Boolean).length === 2) L = 1;
+    if (L === 0 && ai.reading >= 2 && v.score > 1.1 && v.dropped.filter((d) => !d).length === 2) L = 1; // heads-up
     if (v.score < 1.09 - short * 0.04) L = 0;
     if (ai.reading === 3 && v.faceDown.some((seen, i) => i !== v.seat && v.score < seen)) L = 0;
   } else {

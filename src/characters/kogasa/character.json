@@ -1,0 +1,77 @@
+{
+  "id": "kogasa",
+  "name": "Kogasa",
+  "fullName": "Kogasa Tatara",
+  "order": 41,
+  "stats": {
+    "strictness": 4,
+    "aggression": 1,
+    "unpredictability": 4,
+    "comment": "Kogasa is making an effort to act inconspicuous. You can't surprise people if you have a reputation for it."
+  },
+  "look": {
+    "color": "#5a8ad0",
+    "face": {
+      "x": 0.436,
+      "y": 0.27,
+      "size": 0.133
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      4,
+      6,
+      7,
+      7,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      1,
+      2,
+      4,
+      5,
+      6,
+      7,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 58,
+    "bluffType": 3,
+    "reading": 3,
+    "changeType": 1,
+    "tell": {
+      "when": "noPair",
+      "chance": 20,
+      "reveals": 0
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Surprise~!",
+    "swap": "{n} card{s}, please!",
+    "keep": "None for me.",
+    "call": "Call.",
+    "raise": "Raise!",
+    "raise2": "Raise two! Surprise~!",
+    "drop": "No...",
+    "allIn": "Surprise~! All in!",
+    "busted": "Okay, I'm leaving now...'"
+  }
+}

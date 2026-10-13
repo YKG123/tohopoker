@@ -1,0 +1,77 @@
+{
+  "id": "shou",
+  "name": "Shou",
+  "fullName": "Shou Toramaru",
+  "order": 44,
+  "stats": {
+    "strictness": 4,
+    "aggression": 2,
+    "unpredictability": 1,
+    "comment": "Shou isn't really helping out here. She's just cheering Pagoda on."
+  },
+  "look": {
+    "color": "#e0a02a",
+    "face": {
+      "x": 0.486,
+      "y": 0.166,
+      "size": 0.131
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      4,
+      6,
+      7,
+      7,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 57,
+    "bluffType": 1,
+    "reading": 3,
+    "changeType": 3,
+    "tell": {
+      "when": "twoPairOrTrips",
+      "chance": 20,
+      "reveals": 2
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "The Pagoda will guide us!",
+    "swap": "{n}, please.",
+    "keep": "The Pagoda approves.",
+    "call": "Call.",
+    "raise": "Raise.",
+    "raise2": "Raise two!",
+    "drop": "Oh, fold.",
+    "allIn": "All in! I believe!",
+    "busted": "Nazrin, I lost it all again..."
+  }
+}

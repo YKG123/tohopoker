@@ -1,0 +1,77 @@
+{
+  "id": "sanae",
+  "name": "Sanae",
+  "fullName": "Sanae Kochiya",
+  "order": 30,
+  "stats": {
+    "strictness": 2,
+    "aggression": 2,
+    "unpredictability": 3,
+    "comment": "Kanako tells her one thing, and Suwako tells her another. In the end, nothing comes of it but an overburdened shrine maiden."
+  },
+  "look": {
+    "color": "#2f9e5b",
+    "face": {
+      "x": 0.539,
+      "y": 0.118,
+      "size": 0.153
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      5,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 61,
+    "bluffType": 2,
+    "reading": 1,
+    "changeType": 2,
+    "tell": {
+      "when": "twoPairOrTrips",
+      "chance": 40,
+      "reveals": 2
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Moriya Shrine is open for business!",
+    "swap": "{n} card{s}, please!",
+    "keep": "A miracle hand!",
+    "call": "Call!",
+    "raise": "Raise!",
+    "raise2": "Raise two! Miracles happen!",
+    "drop": "I'll fold.",
+    "allIn": "All in!",
+    "busted": "Lady Suwako said this would happen..."
+  }
+}

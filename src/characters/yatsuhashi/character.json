@@ -1,0 +1,77 @@
+{
+  "id": "yatsuhashi",
+  "name": "Yatsuhashi",
+  "fullName": "Yatsuhashi Tsukumo",
+  "order": 57,
+  "stats": {
+    "strictness": 3,
+    "aggression": 1,
+    "unpredictability": 3,
+    "comment": "Yatsuhashi tagged along with her sister. Don't forget she's still in the hand."
+  },
+  "look": {
+    "color": "#a87a5a",
+    "face": {
+      "x": 0.695,
+      "y": 0.147,
+      "size": 0.164
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      4,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      1,
+      2,
+      4,
+      5,
+      6,
+      7,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 56,
+    "bluffType": 2,
+    "reading": 2,
+    "changeType": 2,
+    "tell": {
+      "when": "onePair",
+      "chance": 30,
+      "reveals": 1
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Remember me? I'm Yatsuhashi!",
+    "swap": "{n}, please!",
+    "keep": "I'll keep these!",
+    "call": "Call!",
+    "raise": "Raise!",
+    "raise2": "Raise two!!",
+    "drop": "Fold.",
+    "allIn": "All in!",
+    "busted": "Benben, they forgot me..."
+  }
+}

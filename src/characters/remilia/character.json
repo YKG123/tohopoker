@@ -64,13 +64,14 @@
     "randomBetting": false
   },
   "lines": {
-    "greeting": "Bow before fate.",
+    "greeting": "Looks like it's going to be a fun night",
     "swap": "Give me {n}.",
-    "keep": "Fate is already decided.",
+    "keep": "None for me.",
     "call": "I'll humor you.",
     "raise": "Raise.",
-    "raise2": "Double it. I insist.",
+    "raise2": "Double it.",
     "drop": "...Hmph. Next time.",
+    "allIn": "All in.",
     "busted": "Impossible!"
   }
 }

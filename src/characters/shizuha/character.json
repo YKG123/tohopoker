@@ -1,0 +1,77 @@
+{
+  "id": "shizuha",
+  "name": "Shizuha",
+  "fullName": "Shizuha Aki",
+  "order": 26,
+  "stats": {
+    "strictness": 2,
+    "aggression": 2,
+    "unpredictability": 4,
+    "comment": "Shizuha never was as good as her sister at cards. The beauty of card games is that luck sometimes smiles on her."
+  },
+  "look": {
+    "color": "#c9562c",
+    "face": {
+      "x": 0.483,
+      "y": 0.141,
+      "size": 0.158
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      5,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 63,
+    "bluffType": 3,
+    "reading": 1,
+    "changeType": 1,
+    "tell": {
+      "when": "noPair",
+      "chance": 40,
+      "reveals": 0
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Hello... Minoriko said I should come.",
+    "swap": "{n}, please.",
+    "keep": "I'll keep these.",
+    "call": "Call.",
+    "raise": "Raise.",
+    "raise2": "Raise two... maybe?",
+    "drop": "Fold.",
+    "allIn": "This is all I have!",
+    "busted": "Winter is here..."
+  }
+}

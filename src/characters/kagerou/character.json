@@ -1,0 +1,77 @@
+{
+  "id": "kagerou",
+  "name": "Kagerou",
+  "fullName": "Kagerou Imaizumi",
+  "order": 55,
+  "stats": {
+    "strictness": 2,
+    "aggression": 3,
+    "unpredictability": 3,
+    "comment": "Kagerou is shy until she gets a good hand. The right cards have the same effect as a full moon."
+  },
+  "look": {
+    "color": "#7a2a3a",
+    "face": {
+      "x": 0.476,
+      "y": 0.165,
+      "size": 0.15
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      5,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      3,
+      5,
+      6,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 66,
+    "bluffType": 2,
+    "reading": 1,
+    "changeType": 2,
+    "tell": {
+      "when": "straightOrBetter",
+      "chance": 40,
+      "reveals": 4
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Nice to meet you all.",
+    "swap": "{n}, please.",
+    "keep": "I'll keep these.",
+    "call": "Call.",
+    "raise": "Raise.",
+    "raise2": "Raise two! Awooo!",
+    "drop": "Maybe not.",
+    "allIn": "All in!!",
+    "busted": "Exterminated again..."
+  }
+}

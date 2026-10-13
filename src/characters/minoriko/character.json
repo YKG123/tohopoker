@@ -1,0 +1,77 @@
+{
+  "id": "minoriko",
+  "name": "Minoriko",
+  "fullName": "Minoriko Aki",
+  "order": 25,
+  "stats": {
+    "strictness": 3,
+    "aggression": 3,
+    "unpredictability": 2,
+    "comment": "Card games are the best way to pass time on the farm. Expect a quality game."
+  },
+  "look": {
+    "color": "#d9822b",
+    "face": {
+      "x": 0.427,
+      "y": 0.144,
+      "size": 0.164
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      4,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      3,
+      5,
+      6,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 64,
+    "bluffType": 1,
+    "reading": 2,
+    "changeType": 3,
+    "tell": {
+      "when": "twoPairOrTrips",
+      "chance": 30,
+      "reveals": 2
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "A bountiful harvest awaits!",
+    "swap": "{n} card{s}, please.",
+    "keep": "These are ripe.",
+    "call": "Call.",
+    "raise": "Raise.",
+    "raise2": "Raise two! Harvest time!",
+    "drop": "I fold.",
+    "allIn": "All in!",
+    "busted": "A poor harvest this year..."
+  }
+}

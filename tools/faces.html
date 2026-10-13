@@ -1,0 +1,280 @@
+<!doctype html><meta charset="utf-8"><title>Face editor</title>
+<!-- Dev tool: set each character's look.face (the point between the eyes, and the face box size).
+     Run `npm run dev` and open /tools/faces.html. Changes save straight into src/characters/<id>/character.json. -->
+<style>
+  body { margin: 0; background: #1e1e1e; color: #ddd; font: 13px/1.4 system-ui, sans-serif; display: flex; height: 100vh; }
+  #list { width: 470px; overflow-y: auto; padding: 8px; display: flex; flex-wrap: wrap; gap: 4px; align-content: flex-start; }
+  #list .pick { position: relative; width: 92px; height: 168px; cursor: pointer; border-radius: 4px; outline: 2px solid transparent; }
+  #list .pick.on { outline-color: #ff9933; }
+  #list .pick.dirty::after { content: '●'; position: absolute; right: 4px; top: 0; color: #ff9933; }
+  #main { flex: 1; overflow-y: auto; padding: 12px 16px; }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  .row { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; margin: 10px 0; }
+  .panel { background: #2a2a2a; border-radius: 6px; padding: 8px; }
+  .panel b { display: block; margin-bottom: 4px; color: #aaa; font-weight: 600; }
+  .stage { position: relative; transform-origin: 0 0; }
+  #zoomed { position: relative; width: 420px; height: 420px; overflow: hidden; cursor: crosshair; background: #888; }
+  #zoomed img { position: absolute; image-rendering: auto; pointer-events: none; }
+  #full { position: relative; height: 420px; cursor: crosshair; background: #888; }
+  #full img { height: 420px; display: block; pointer-events: none; }
+  .mark { position: absolute; pointer-events: none; border: 2px solid #0f0; box-sizing: border-box; }
+  .dot { position: absolute; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: #f0f; pointer-events: none; }
+  .cross-h, .cross-v { position: absolute; background: rgba(255, 0, 255, 0.5); pointer-events: none; }
+  button, select { font: inherit; padding: 4px 10px; }
+  kbd { background: #444; border-radius: 3px; padding: 0 4px; }
+  #status { margin-left: 8px; color: #8c8; }
+  .center-line { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: rgba(255, 0, 255, 0.6); pointer-events: none; }
+  .center-hline { position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(255, 0, 255, 0.6); pointer-events: none; }
+</style>
+<div id="list"></div>
+<div id="main">
+  <h1 id="title"></h1>
+  <div>
+    Click the point <b>between the eyes</b> in either picture. <kbd>←↑→↓</kbd> nudge 1px (<kbd>Shift</kbd> 5px),
+    <kbd>-</kbd>/<kbd>=</kbd> face box size, <kbd>Ctrl+S</kbd> save, <kbd>PgUp</kbd>/<kbd>PgDn</kbd> previous/next character.
+    <label><input type="checkbox" id="guides" checked> center guides</label>
+  </div>
+  <div class="row">
+    <select id="emotion"><option>neutral</option><option>win</option><option>lose</option><option>tell</option></select>
+    <label><input type="checkbox" id="companion"> edit companion</label>
+    <span>x <input id="fx" size="6"> y <input id="fy" size="6"> size <input id="fs" size="6"></span>
+    <button id="save">Save</button> <button id="revert">Revert</button><span id="status"></span>
+  </div>
+  <div class="row">
+    <div class="panel"><b>Close-up (face box zoomed in)</b><div id="zoomed"></div></div>
+    <div class="panel"><b>Whole sprite</b><div id="full"></div></div>
+  </div>
+  <div class="row">
+    <div class="panel"><b>Select card (x3)</b><div id="pv-select"></div></div>
+    <div class="panel"><b>Tab scoreboard (x3)</b><div id="pv-board"></div></div>
+    <div class="panel"><b>Table figure (x2)</b><div id="pv-figure"></div></div>
+  </div>
+  <div class="row">
+    <div class="panel"><b>Banner (x1.5)</b><div id="pv-banner"></div></div>
+  </div>
+</div>
+<script type="module">
+import '/src/style.css';
+import { characters } from '/src/characters/index.ts';
+import { Banner } from '/src/ui/table.ts';
+import { imageSize, paintFace, placeFigure } from '/src/ui/portrait.ts';
+
+const $ = (id) => document.getElementById(id);
+const saved = new Map(characters.map((c) => [c.id, { face: { ...c.look.face }, companion: c.look.companion && { ...c.look.companion.face } }]));
+const dirty = new Set();
+let current = characters.find((c) => c.id === location.hash.slice(1)) ?? characters[0];
+const emotion = () => $('emotion').value;
+const editingCompanion = () => $('companion').checked && !!current.look.companion;
+const faceOf = (c) => (editingCompanion() && c === current ? c.look.companion.face : c.look.face);
+const artOf = (c) => (editingCompanion() && c === current ? c.companionArt : c.art);
+
+// --- Character list: every select card, so off-center ones stand out side by side.
+const cards = new Map();
+function selectCard(parent, c, scale) {
+  const stage = document.createElement('div');
+  stage.className = 'stage';
+  stage.style.cssText = `width:46px;height:84px;transform:scale(${scale});`;
+  const card = document.createElement('div');
+  card.className = 'select-card';
+  card.style.cssText = 'left:0;top:0;width:46px;height:84px;';
+  card.style.setProperty('--accent', c.look.color);
+  const face = document.createElement('div');
+  face.className = 'select-face';
+  const name = document.createElement('div');
+  name.className = 'select-name';
+  name.textContent = c.name;
+  name.style.fontSize = c.name.length > 9 ? '7px' : '11px';
+  card.append(face, name);
+  if ($('guides').checked) { const g = document.createElement('div'); g.className = 'center-line'; g.style.height = '58px'; face.append(g); }
+  stage.append(card);
+  parent.append(stage);
+  paintFace(face, c.art[emotion()], c.look.face, 42, 58);
+  return stage;
+}
+function renderList() {
+  $('list').replaceChildren();
+  for (const c of characters) {
+    const pick = document.createElement('div');
+    pick.className = `pick${c === current ? ' on' : ''}${dirty.has(c.id) ? ' dirty' : ''}`;
+    selectCard(pick, c, 2);
+    pick.addEventListener('click', () => choose(c));
+    $('list').append(pick);
+    cards.set(c.id, pick);
+  }
+}
+
+// --- The two pictures you click on.
+let full = { w: 1, h: 1, k: 1 };
+async function renderPictures() {
+  const c = current, f = faceOf(c), url = artOf(c)[emotion()];
+  const { w, h } = await imageSize(url);
+  // Close-up: 2.4 face boxes across, centered on the face.
+  const span = f.size * h * 2.4, k = 420 / span;
+  const z = $('zoomed');
+  z.replaceChildren();
+  const img = new Image();
+  img.src = url;
+  img.style.cssText = `width:${w * k}px;height:${h * k}px;left:${210 - f.x * w * k}px;top:${210 - f.y * h * k}px;`;
+  z.append(img);
+  const box = document.createElement('div');
+  box.className = 'mark';
+  const bs = f.size * h * k;
+  box.style.cssText = `left:${210 - bs / 2}px;top:${210 - bs / 2}px;width:${bs}px;height:${bs}px;`;
+  z.append(box, Object.assign(document.createElement('div'), { className: 'dot', style: 'left:210px;top:210px' }));
+  z.onclick = (e) => {
+    const r = z.getBoundingClientRect();
+    move((e.clientX - r.left - 210) / k / w, (e.clientY - r.top - 210) / k / h);
+  };
+  // Whole sprite.
+  const fl = $('full');
+  fl.replaceChildren();
+  const big = new Image();
+  big.src = url;
+  fl.append(big);
+  full = { w, h, k: 420 / h };
+  fl.style.width = `${w * full.k}px`;
+  const dot = Object.assign(document.createElement('div'), { className: 'dot' });
+  dot.style.left = `${f.x * w * full.k}px`;
+  dot.style.top = `${f.y * h * full.k}px`;
+  const fb = document.createElement('div');
+  fb.className = 'mark';
+  const fs = f.size * h * full.k;
+  fb.style.cssText = `left:${f.x * w * full.k - fs / 2}px;top:${f.y * h * full.k - fs / 2}px;width:${fs}px;height:${fs}px;`;
+  fl.append(fb, dot);
+  fl.onclick = (e) => {
+    const r = fl.getBoundingClientRect();
+    set((e.clientX - r.left) / full.k / w, (e.clientY - r.top) / full.k / h);
+  };
+}
+
+// --- How it looks in the game.
+async function renderPreviews() {
+  const c = current;
+  $('pv-select').replaceChildren();
+  const s = selectCard($('pv-select'), c, 3);
+  s.parentElement.style.cssText = 'width:138px;height:252px';
+  // Tab scoreboard face strip.
+  const board = $('pv-board');
+  board.replaceChildren();
+  board.style.cssText = 'width:102px;height:54px;position:relative';
+  const strip = document.createElement('div');
+  strip.className = 'sb-face';
+  strip.style.cssText = 'position:absolute;left:0;top:0;width:34px;height:18px;transform:scale(3);transform-origin:0 0;';
+  strip.style.setProperty('--accent', c.look.color);
+  if ($('guides').checked) { strip.append(Object.assign(document.createElement('div'), { className: 'center-line' }), Object.assign(document.createElement('div'), { className: 'center-hline' })); }
+  board.append(strip);
+  paintFace(strip, c.art[emotion()], c.look.face, 34, 18, 1.15, 0.12);
+  // Table figure, as an opponent seat draws it (face 40px tall).
+  const fig = $('pv-figure');
+  fig.replaceChildren();
+  fig.style.cssText = 'width:300px;height:220px;position:relative;overflow:hidden;background:#d4b98c';
+  const inner = document.createElement('div');
+  inner.style.cssText = 'position:absolute;left:0;top:0;width:150px;height:110px;transform:scale(2);transform-origin:0 0;';
+  const im = document.createElement('img');
+  im.style.position = 'absolute';
+  inner.append(im);
+  fig.append(inner);
+  await placeFigure(im, c.art[emotion()], c.look.face, 75, 40, 40);
+  // Banner.
+  const pb = $('pv-banner');
+  pb.replaceChildren();
+  const cell = document.createElement('div');
+  cell.className = 'stage';
+  cell.style.cssText = 'width:400px;height:66px;position:relative;zoom:1.5';
+  pb.append(cell);
+  await new Banner(cell, c).enter(0, emotion(), c.name);
+}
+
+function syncInputs() {
+  const f = faceOf(current);
+  $('fx').value = f.x.toFixed(3);
+  $('fy').value = f.y.toFixed(3);
+  $('fs').value = f.size.toFixed(3);
+  $('title').textContent = `${current.name}${editingCompanion() ? ` – ${current.look.companion.name}` : ''}  (${current.id})`;
+}
+let pending = 0;
+function refresh() {
+  syncInputs();
+  cancelAnimationFrame(pending);
+  pending = requestAnimationFrame(() => {
+    renderPictures();
+    renderPreviews();
+    const pick = cards.get(current.id);
+    if (pick) {
+      pick.replaceChildren();
+      selectCard(pick, current, 2);
+      pick.classList.toggle('dirty', dirty.has(current.id));
+    }
+  });
+}
+function set(x, y, size) {
+  const f = faceOf(current);
+  f.x = Math.min(1, Math.max(0, x));
+  f.y = Math.min(1, Math.max(0, y));
+  if (size !== undefined) f.size = Math.max(0.02, size);
+  dirty.add(current.id);
+  $('status').textContent = 'unsaved';
+  refresh();
+}
+const move = (dx, dy) => { const f = faceOf(current); set(f.x + dx, f.y + dy); };
+
+async function save() {
+  for (const companion of [false, true]) {
+    if (companion && !current.look.companion) continue;
+    const face = companion ? current.look.companion.face : current.look.face;
+    const r = await fetch('/__face', { method: 'POST', body: JSON.stringify({ id: current.id, face, companion }) });
+    if (!r.ok) { $('status').textContent = `save failed: ${await r.text()}`; return; }
+  }
+  saved.set(current.id, { face: { ...current.look.face }, companion: current.look.companion && { ...current.look.companion.face } });
+  dirty.delete(current.id);
+  $('status').textContent = 'saved';
+  refresh();
+}
+function revert() {
+  const s = saved.get(current.id);
+  Object.assign(current.look.face, s.face);
+  if (s.companion) Object.assign(current.look.companion.face, s.companion);
+  dirty.delete(current.id);
+  $('status').textContent = '';
+  refresh();
+}
+function choose(c) {
+  current = c;
+  history.replaceState(null, '', `#${c.id}`);
+  $('companion').checked = false;
+  $('status').textContent = dirty.has(c.id) ? 'unsaved' : '';
+  renderList();
+  refresh();
+}
+
+$('save').onclick = save;
+$('revert').onclick = revert;
+$('emotion').onchange = () => { renderList(); refresh(); };
+$('companion').onchange = refresh;
+$('guides').onchange = () => { renderList(); refresh(); };
+for (const [id, key] of [['fx', 'x'], ['fy', 'y'], ['fs', 'size']]) {
+  $(id).onchange = () => { const f = faceOf(current); const v = Number($(id).value); if (!Number.isNaN(v)) { f[key] = v; dirty.add(current.id); refresh(); } };
+}
+window.addEventListener('keydown', async (e) => {
+  if (e.target instanceof HTMLInputElement && e.target.type !== 'checkbox') return;
+  const { w, h } = await imageSize(artOf(current)[emotion()]);
+  const step = e.shiftKey ? 5 : 1;
+  const f = faceOf(current);
+  if (e.key === 'ArrowLeft') move(-step / w, 0);
+  else if (e.key === 'ArrowRight') move(step / w, 0);
+  else if (e.key === 'ArrowUp') move(0, -step / h);
+  else if (e.key === 'ArrowDown') move(0, step / h);
+  else if (e.key === '-' || e.key === '_') set(f.x, f.y, f.size * 0.98);
+  else if (e.key === '=' || e.key === '+') set(f.x, f.y, f.size / 0.98);
+  else if (e.key === 's' && (e.ctrlKey || e.metaKey)) save();
+  else if (e.key === 'PageDown' || e.key === 'PageUp') {
+    const i = characters.indexOf(current) + (e.key === 'PageDown' ? 1 : -1);
+    choose(characters[(i + characters.length) % characters.length]);
+  } else return;
+  e.preventDefault();
+});
+window.addEventListener('beforeunload', (e) => { if (dirty.size) e.preventDefault(); });
+
+renderList();
+refresh();
+</script>

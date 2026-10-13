@@ -1,0 +1,77 @@
+{
+  "id": "junko",
+  "name": "Junko",
+  "fullName": "Junko",
+  "order": 66,
+  "stats": {
+    "strictness": 5,
+    "aggression": 5,
+    "unpredictability": 1,
+    "comment": "Junko plays simply to kill off her opponents. Let her win a hand or two, or she'll actually kill you."
+  },
+  "look": {
+    "color": "#d07a2a",
+    "face": {
+      "x": 0.523,
+      "y": 0.329,
+      "size": 0.109
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      2,
+      3,
+      6,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 72,
+    "bluffType": 1,
+    "reading": 3,
+    "changeType": 3,
+    "tell": {
+      "when": "twoPairOrTrips",
+      "chance": 10,
+      "reveals": 2
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "I am here for one purpose.",
+    "swap": "{n}.",
+    "keep": "0.",
+    "call": "Call.",
+    "raise": "Raise.",
+    "raise2": "Raise two. Out of my way.",
+    "drop": "...This changes nothing.",
+    "allIn": "All in. Die.",
+    "busted": "Unbelivable."
+  }
+}

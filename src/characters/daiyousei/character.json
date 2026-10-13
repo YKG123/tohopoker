@@ -1,0 +1,77 @@
+{
+  "id": "daiyousei",
+  "name": "Daiyousei",
+  "fullName": "Daiyousei",
+  "order": 18,
+  "stats": {
+    "strictness": 1,
+    "aggression": 1,
+    "unpredictability": 1,
+    "comment": "Cirno brought a friend to the tournament. You're in over your head, aren't you?"
+  },
+  "look": {
+    "color": "#5aa64a",
+    "face": {
+      "x": 0.432,
+      "y": 0.147,
+      "size": 0.171
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      4,
+      5,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      1,
+      2,
+      4,
+      5,
+      6,
+      7,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 52,
+    "bluffType": 1,
+    "reading": 1,
+    "changeType": 3,
+    "tell": {
+      "when": "noPair",
+      "chance": 50,
+      "reveals": 0
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Um, hello... Cirno brought me.",
+    "swap": "{n}, p-please.",
+    "keep": "I'll keep these, I think.",
+    "call": "C-call...",
+    "raise": "Raise...?",
+    "raise2": "Raise two? Is that okay?",
+    "drop": "I'll sit this one out.",
+    "allIn": "All in? Oh no, oh no...",
+    "busted": "I'll go find Cirno..."
+  }
+}

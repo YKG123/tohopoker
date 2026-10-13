@@ -64,13 +64,14 @@
     "randomBetting": false
   },
   "lines": {
-    "greeting": "A friendly game, right?",
+    "greeting": "May I join you?",
     "swap": "{n} card{s}, please.",
     "keep": "I'll stay.",
     "call": "I'll call.",
     "raise": "Raise.",
     "raise2": "Raise two.",
     "drop": "...I fold.",
+    "allIn": "This is it!",
     "busted": "This was a bit much..."
   }
 }

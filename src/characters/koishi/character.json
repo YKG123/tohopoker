@@ -1,0 +1,77 @@
+{
+  "id": "koishi",
+  "name": "Koishi",
+  "fullName": "Koishi Komeiji",
+  "order": 39,
+  "stats": {
+    "strictness": 1,
+    "aggression": 2,
+    "unpredictability": 5,
+    "comment": "If you can get into your opponent's head, you've already won. Poor Koishi can't even get into her own head."
+  },
+  "look": {
+    "color": "#7ab55a",
+    "face": {
+      "x": 0.437,
+      "y": 0.15,
+      "size": 0.153
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      4,
+      5,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 65,
+    "bluffType": 3,
+    "reading": 1,
+    "changeType": 1,
+    "tell": {
+      "when": "never",
+      "chance": 50,
+      "reveals": 0
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Oh! What are we playing?",
+    "swap": "{n}...?",
+    "keep": "Huh? What?.",
+    "call": "Call~",
+    "raise": "Raise~",
+    "raise2": "Raise two~",
+    "drop": "Oh, I folded~",
+    "allIn": "Oops, all in~",
+    "busted": "Wait, what were we doing?s"
+  }
+}

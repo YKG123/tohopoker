@@ -1,0 +1,77 @@
+{
+  "id": "byakuren",
+  "name": "Byakuren",
+  "fullName": "Byakuren Hijiri",
+  "order": 45,
+  "stats": {
+    "strictness": 5,
+    "aggression": 1,
+    "unpredictability": 1,
+    "comment": "Nonviolence has done a number on Byakuren. You can't win unless somebody else loses!"
+  },
+  "look": {
+    "color": "#8a5ac2",
+    "face": {
+      "x": 0.617,
+      "y": 0.164,
+      "size": 0.145
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      2,
+      3,
+      6,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      1,
+      2,
+      4,
+      5,
+      6,
+      7,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 52,
+    "bluffType": 1,
+    "reading": 3,
+    "changeType": 3,
+    "tell": {
+      "when": "straightOrBetter",
+      "chance": 10,
+      "reveals": 4
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "In the name of the Three Treasures!",
+    "swap": "{n}, please.",
+    "keep": "I'm at peace.",
+    "call": "Call.",
+    "raise": "Forgive me, I raise.",
+    "raise2": "Raise two. Namusan!",
+    "drop": "Let us not quarrel.",
+    "allIn": "All in. Namusan!",
+    "busted": "I don't mind."
+  }
+}

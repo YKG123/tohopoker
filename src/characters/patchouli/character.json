@@ -1,0 +1,77 @@
+{
+  "id": "patchouli",
+  "name": "Patchouli",
+  "fullName": "Patchouli Knowledge",
+  "order": 20,
+  "stats": {
+    "strictness": 4,
+    "aggression": 3,
+    "unpredictability": 1,
+    "comment": "Patchouli woke up just in time for tonight's tournament. Day and night don't exist in the magic library."
+  },
+  "look": {
+    "color": "#8a4fb5",
+    "face": {
+      "x": 0.469,
+      "y": 0.15,
+      "size": 0.158
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      4,
+      6,
+      7,
+      7,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      3,
+      5,
+      6,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 62,
+    "bluffType": 1,
+    "reading": 3,
+    "changeType": 3,
+    "tell": {
+      "when": "twoPairOrTrips",
+      "chance": 20,
+      "reveals": 2
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Let's keep this simple.",
+    "swap": "{n} card{s}.",
+    "keep": "No exchange.",
+    "call": "Call.",
+    "raise": "Raise.",
+    "raise2": "Raise two.",
+    "drop": "Not worth the effort.",
+    "allIn": "All in. Curse of dimensionality!",
+    "busted": "Oh well. I'm going back to the library."
+  }
+}

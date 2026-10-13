@@ -48,6 +48,8 @@ export interface CharacterLines {
   raise: string;
   raise2: string;
   drop: string;
+  /** Said when they put in their last coin; falls back to "All in!". */
+  allIn?: string;
   /** Said in the cut-in when they go broke; falls back to `drop`. */
   busted?: string;
 }

@@ -1,0 +1,77 @@
+{
+  "id": "futo",
+  "name": "Futo",
+  "fullName": "Mononobe no Futo",
+  "order": 50,
+  "stats": {
+    "strictness": 1,
+    "aggression": 3,
+    "unpredictability": 3,
+    "comment": "Miko left Futo in charge of the shrine's savings. That may have been a mistake."
+  },
+  "look": {
+    "color": "#7a8aa8",
+    "face": {
+      "x": 0.544,
+      "y": 0.23,
+      "size": 0.157
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      4,
+      5,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      3,
+      5,
+      6,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 66,
+    "bluffType": 2,
+    "reading": 1,
+    "changeType": 2,
+    "tell": {
+      "when": "straightOrBetter",
+      "chance": 50,
+      "reveals": 4
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Prepare to lose, commoners!",
+    "swap": "{n} card{s}, I say!",
+    "keep": "These shall do!",
+    "call": "Call!",
+    "raise": "Raise!",
+    "raise2": "Raise two! Behold!",
+    "drop": "A tactical retreat!",
+    "allIn": "All in! For the Crown Prince!",
+    "busted": "The Crown Prince's savings..."
+  }
+}

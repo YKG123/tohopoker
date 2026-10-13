@@ -1,0 +1,77 @@
+{
+  "id": "nue",
+  "name": "Nue",
+  "fullName": "Nue Houjuu",
+  "order": 46,
+  "stats": {
+    "strictness": 3,
+    "aggression": 5,
+    "unpredictability": 5,
+    "comment": "Nobody can tell what Nue is holding. Nobody can tell what Nue is, either."
+  },
+  "look": {
+    "color": "#2a2a3a",
+    "face": {
+      "x": 0.5,
+      "y": 0.153,
+      "size": 0.153
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      4,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 80,
+    "bluffType": 3,
+    "reading": 2,
+    "changeType": 1,
+    "tell": {
+      "when": "noPair",
+      "chance": 30,
+      "reveals": 0
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Guess what I am.",
+    "swap": "{n}.",
+    "keep": "0.",
+    "call": "Call.",
+    "raise": "Raise!",
+    "raise2": "Raise two!",
+    "drop": "Didn't see that coming...",
+    "allIn": "All in!!",
+    "busted": "Seen through... how?"
+  }
+}

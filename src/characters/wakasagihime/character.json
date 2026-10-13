@@ -1,0 +1,77 @@
+{
+  "id": "wakasagihime",
+  "name": "Wakasagihime",
+  "fullName": "Wakasagihime",
+  "order": 53,
+  "stats": {
+    "strictness": 5,
+    "aggression": 2,
+    "unpredictability": 5,
+    "comment": "A princess of the lake has money to spare. She just won't sit at a table with a kappa."
+  },
+  "look": {
+    "color": "#3a6a9e",
+    "face": {
+      "x": 0.33,
+      "y": 0.119,
+      "size": 0.15
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      2,
+      3,
+      6,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 65,
+    "bluffType": 3,
+    "reading": 3,
+    "changeType": 1,
+    "tell": {
+      "when": "noPair",
+      "chance": 10,
+      "reveals": 0
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Pleased to meet you all!",
+    "swap": "{n}, please!",
+    "keep": "I'll keep these.",
+    "call": "Call.",
+    "raise": "Raise.",
+    "raise2": "Raise two!",
+    "drop": "Fold...",
+    "allIn": "All in!",
+    "busted": "Back to the lake, I suppose..."
+  }
+}

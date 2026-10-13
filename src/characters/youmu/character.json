@@ -64,13 +64,14 @@
     "randomBetting": false
   },
   "lines": {
-    "greeting": "I-I'm not supposed to gamble...",
+    "greeting": "I'm not supposed to gamble...",
     "swap": "{n} card{s}, please!",
     "keep": "I'll keep these!",
-    "call": "C-call...",
+    "call": "Call...",
     "raise": "Raise!",
     "raise2": "W-with all my resolve!",
     "drop": "I'm sorry, Lady Yuyuko...",
+    "allIn": "All in! No retreat!",
     "busted": "Lady Yuyuko, I lost everything!"
   }
 }

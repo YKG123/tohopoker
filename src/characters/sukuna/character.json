@@ -1,0 +1,77 @@
+{
+  "id": "sukuna",
+  "name": "Sukuna",
+  "fullName": "Shinmyoumaru Sukuna",
+  "order": 59,
+  "stats": {
+    "strictness": 1,
+    "aggression": 4,
+    "unpredictability": 4,
+    "comment": "Sukuna gets overexcited playing this game. Her main objective is to fill her bowl."
+  },
+  "look": {
+    "color": "#c23a5a",
+    "face": {
+      "x": 0.467,
+      "y": 0.219,
+      "size": 0.209
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      4,
+      5,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 73,
+    "bluffType": 3,
+    "reading": 1,
+    "changeType": 1,
+    "tell": {
+      "when": "straightOrBetter",
+      "chance": 50,
+      "reveals": 4
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Have you come to taste humiliation?",
+    "swap": "{n}, please!",
+    "keep": "These are enough!",
+    "call": "Call!",
+    "raise": "Raise!",
+    "raise2": "Raise bigger!!",
+    "drop": "Fold...",
+    "allIn": "All in!",
+    "busted": "I miss my coins..."
+  }
+}

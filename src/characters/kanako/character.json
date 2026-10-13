@@ -1,0 +1,77 @@
+{
+  "id": "kanako",
+  "name": "Kanako",
+  "fullName": "Kanako Yasaka",
+  "order": 32,
+  "stats": {
+    "strictness": 3,
+    "aggression": 5,
+    "unpredictability": 1,
+    "comment": "Kanako tried to get Kaguya to put Eientei up as a bet. Oh, brood of vipers!"
+  },
+  "look": {
+    "color": "#6a3a9e",
+    "face": {
+      "x": 0.497,
+      "y": 0.224,
+      "size": 0.129
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      4,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 72,
+    "bluffType": 1,
+    "reading": 2,
+    "changeType": 3,
+    "tell": {
+      "when": "twoPairOrTrips",
+      "chance": 30,
+      "reveals": 2
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "I'm here to make a profit!",
+    "swap": "{n} card{s}.",
+    "keep": "These will do.",
+    "call": "Call.",
+    "raise": "Raise.",
+    "raise2": "Raise two! Surrender your coins!",
+    "drop": "A temporary setback.",
+    "allIn": "All in! Onbashira!",
+    "busted": "All that money... wasted..."
+  }
+}

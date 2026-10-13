@@ -186,6 +186,21 @@ button {
   }
 }
 
+.banner-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 401px;
+  height: 65px;
+  transform-origin: 0 0;
+}
+
+.banner.mirrored .banner-inner {
+  left: auto;
+  right: 0;
+  transform-origin: 100% 0;
+}
+
 .banner-bg {
   position: absolute;
   inset: 0;
@@ -405,7 +420,9 @@ button {
   top: 61px;
   left: 0;
   right: 0;
+  height: 14px;
   font-size: 11px;
+  line-height: 14px;
   text-align: center;
 }
 
@@ -476,4 +493,327 @@ button {
 .figure.gone {
   opacity: 0;
   filter: grayscale(1);
+}
+
+/* The title, over the original logo. */
+.game-title {
+  position: absolute;
+  background: #fff;
+  text-align: center;
+  white-space: nowrap;
+  font: italic bold 37px/84px Georgia, var(--swf-serif);
+  letter-spacing: -1px;
+}
+
+.game-title-a {
+  color: #333;
+}
+
+.game-title-b {
+  color: #0000cc;
+}
+
+/* --- Game mode, dialogs and the Tab scoreboard (new screens, drawn in the menus' colors) --------- */
+.title-cover {
+  position: absolute;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.select-title {
+  background: #006633;
+  font: 400 30px/37px var(--swf-serif);
+  letter-spacing: 1px;
+}
+
+.record-title {
+  background: #006600;
+  font: bold 29px/37px var(--swf-serif);
+}
+
+.menu-button {
+  position: absolute;
+  box-sizing: border-box;
+  padding: 0;
+  border: 2px solid #333;
+  background: #ff9933;
+  color: #fff;
+  font: bold 15px/20px var(--swf-serif);
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.menu-button.blue {
+  background: #336699;
+}
+
+.menu-button:hover {
+  filter: brightness(1.1);
+}
+
+.menu-button:disabled {
+  filter: grayscale(1);
+  cursor: default;
+}
+
+.mode-tab {
+  position: absolute;
+  box-sizing: border-box;
+  border: 2px dashed #9a9a50;
+  border-radius: 3px;
+  background: transparent;
+  color: #8a8a48;
+  font: bold 17px/22px var(--swf-serif);
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.mode-tab:hover {
+  color: var(--ink);
+}
+
+/* The chosen mode, in the menus' green; the other is only outlined. */
+.mode-tab.on {
+  border: 2px solid var(--ink);
+  background: #006633;
+  color: #fff;
+}
+
+.mode-row,
+.mode-value {
+  font-size: 15px;
+  line-height: 21px;
+}
+
+.mode-row {
+  box-sizing: border-box;
+  padding-left: 6px;
+  border-bottom: 1px solid #a8a84c;
+}
+
+.mode-value {
+  text-align: center;
+}
+
+.mode-screen .hotspot {
+  color: var(--ink);
+  font-size: 14px;
+}
+
+.mode-screen .select-footer {
+  font-size: 11px;
+}
+
+.dialog {
+  pointer-events: auto;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.dialog-box {
+  position: absolute;
+  box-sizing: border-box;
+  border: 3px solid #333;
+  background: #006600;
+}
+
+.dialog-text {
+  color: #fff;
+  font: bold 14px/20px var(--swf-serif);
+  text-align: center;
+  white-space: pre-wrap;
+}
+
+.spectate-cover {
+  position: absolute;
+  background: linear-gradient(rgb(12, 83, 33), rgb(0, 71, 20));
+}
+
+.spectate-speed {
+  color: #fff;
+  font: bold 12px/14px var(--swf-serif);
+  text-align: center;
+}
+
+.speed-slider {
+  position: absolute;
+  margin: 0;
+  accent-color: #ff9933;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.spectate-text {
+  color: #fff;
+  font: bold 14px/20px var(--swf-serif);
+}
+
+.rec-text.compact {
+  font-size: 14px;
+  line-height: 14.5px;
+}
+
+.rec-table {
+  position: absolute;
+  inset: 0;
+}
+
+.rec-footer {
+  font-size: 12px;
+  line-height: 14px;
+}
+
+.scoreboard {
+  z-index: 20;
+}
+
+/* The rows scroll (mouse wheel or the bar) once the field is longer than ten per column. */
+.sb-list {
+  position: absolute;
+  overflow-y: auto;
+  overflow-x: hidden;
+  pointer-events: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #888 transparent;
+}
+
+.sb-inner {
+  position: relative;
+}
+
+.sb-panel {
+  position: absolute;
+  box-sizing: border-box;
+  border: 2px solid #111;
+  border-radius: 4px;
+  background: rgba(28, 26, 24, 0.9);
+  color: #eee;
+  font: bold 12px/14px var(--swf-gothic);
+}
+
+.sb-title {
+  position: absolute;
+  left: 10px;
+  top: 8px;
+  font: bold 18px/22px var(--swf-serif);
+  color: var(--coin-gold);
+}
+
+.sb-info {
+  position: absolute;
+  right: 10px;
+  top: 6px;
+  font-size: 11px;
+  line-height: 13px;
+  text-align: right;
+  white-space: pre;
+  color: #ccc;
+}
+
+.sb-row {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  box-sizing: border-box;
+  padding: 0 6px 0 2px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.sb-row.odd {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sb-row.me {
+  background: rgba(247, 194, 58, 0.3);
+  outline: 1px solid var(--coin-gold);
+}
+
+.sb-row.out {
+  color: #888;
+}
+
+.sb-row.out .sb-face {
+  filter: grayscale(1) brightness(0.7);
+}
+
+.sb-move {
+  width: 10px;
+  font-size: 9px;
+  text-align: center;
+}
+
+.sb-move.up {
+  color: #4cd964;
+}
+
+.sb-move.down {
+  color: #ff4d4d;
+}
+
+.sb-rank {
+  width: 18px;
+  text-align: right;
+  color: #bbb;
+}
+
+.sb-face {
+  flex: none;
+  width: 34px;
+  height: 18px;
+  border-radius: 2px;
+  background-color: color-mix(in srgb, var(--accent, #9c6) 45%, #fff);
+  background-repeat: no-repeat;
+}
+
+.sb-name {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.sb-note {
+  color: #999;
+  font-size: 10px;
+}
+
+.sb-value {
+  color: var(--coin-gold);
+}
+
+.sb-row.out .sb-value {
+  color: #8c8;
+}
+
+.label-cover {
+  position: absolute;
+  background: #d2bc90;
+}
+
+.coin-label.boxed {
+  box-sizing: border-box;
+  border: 1px solid #333;
+  background: #339933;
+  line-height: 20px;
+}
+
+/* A relabeled bet button: covers the baked-in word in the button's own colors. */
+.button-label {
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  right: 5px;
+  bottom: 3px;
+  background: #996633;
+  color: #fff;
+  font: 900 17px/21px Impact, 'Arial Black', var(--swf-gothic);
+  letter-spacing: 0.5px;
+  text-align: center;
+  pointer-events: none;
+}
+
+/* Figures sort among themselves by width (see OpponentSeat.setPose) without rising over other layers. */
+.figures {
+  isolation: isolate;
 }

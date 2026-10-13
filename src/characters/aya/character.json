@@ -1,0 +1,77 @@
+{
+  "id": "aya",
+  "name": "Aya",
+  "fullName": "Aya Shameimaru",
+  "order": 29,
+  "stats": {
+    "strictness": 4,
+    "aggression": 3,
+    "unpredictability": 2,
+    "comment": "Aya is only here for the story. Every big bluff ends up in tomorrow's paper."
+  },
+  "look": {
+    "color": "#b5262c",
+    "face": {
+      "x": 0.355,
+      "y": 0.145,
+      "size": 0.154
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      4,
+      6,
+      7,
+      7,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      3,
+      5,
+      6,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 64,
+    "bluffType": 1,
+    "reading": 3,
+    "changeType": 3,
+    "tell": {
+      "when": "onePair",
+      "chance": 20,
+      "reveals": 1
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Bunbunmaru News, reporting!",
+    "swap": "{n} card{s}, quickly!",
+    "keep": "These make a fine headline.",
+    "call": "Call.",
+    "raise": "Raise!",
+    "raise2": "Newsflash: raise two!",
+    "drop": "No comment.",
+    "allIn": "All in!",
+    "busted": "This won't do..."
+  }
+}

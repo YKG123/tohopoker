@@ -80,11 +80,12 @@
   "lines": {
     "greeting": "Master said to win this...",
     "swap": "{n}, please.",
-    "keep": "I'll keep these.",
+    "keep": "We'll keep these.",
     "call": "Call.",
     "raise": "Raise.",
     "raise2": "We'll raise two!",
     "drop": "I'm out...",
+    "allIn": "All in!",
     "busted": "Master is going to kill me..."
   }
 }

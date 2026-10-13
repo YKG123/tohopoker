@@ -1,5 +1,6 @@
 // Scripted play-through for visual checks.
 // node tools/drive.mjs <url> <outdir> '<steps json>'   steps: {"click":[x,y]} (stage coords) | {"wait":ms} | {"shot":"name"} | {"eval":"js"}
+//   | {"keydown":"Tab"} | {"keyup":"Tab"}
 import { chromium } from 'playwright-core';
 import { readdirSync } from 'node:fs';
 import { homedir } from 'node:os';
@@ -18,6 +19,8 @@ for (const step of JSON.parse(stepsJson)) {
     const zoom = box.width / 400;
     await page.mouse.click(box.x + step.click[0] * zoom, box.y + step.click[1] * zoom);
   }
+  if (step.keydown) await page.keyboard.down(step.keydown);
+  if (step.keyup) await page.keyboard.up(step.keyup);
   if (step.eval) console.log(await page.evaluate(step.eval));
   if (step.shot) await page.screenshot({ path: `${outdir}/${step.shot}.png` });
 }

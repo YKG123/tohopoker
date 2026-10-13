@@ -1,0 +1,77 @@
+{
+  "id": "nazrin",
+  "name": "Nazrin",
+  "fullName": "Nazrin",
+  "order": 40,
+  "stats": {
+    "strictness": 4,
+    "aggression": 3,
+    "unpredictability": 2,
+    "comment": "Nazrin can sniff out treasure anywhere. An unguarded pot is just another find."
+  },
+  "look": {
+    "color": "#7a6a8a",
+    "face": {
+      "x": 0.475,
+      "y": 0.14,
+      "size": 0.173
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      4,
+      6,
+      7,
+      7,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      3,
+      5,
+      6,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 64,
+    "bluffType": 1,
+    "reading": 3,
+    "changeType": 3,
+    "tell": {
+      "when": "onePair",
+      "chance": 20,
+      "reveals": 1
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "This is a good place to get rich!",
+    "swap": "{n}, please.",
+    "keep": "None, please.",
+    "call": "Call.",
+    "raise": "Raise.",
+    "raise2": "Raise two!",
+    "drop": "Not this time.",
+    "allIn": "All in.",
+    "busted": "Ugh, I'm broke!"
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "id": "seija",
+  "name": "Seija",
+  "fullName": "Seija Kijin",
+  "order": 58,
+  "stats": {
+    "strictness": 3,
+    "aggression": 4,
+    "unpredictability": 5,
+    "comment": "Seija always does the opposite of what you'd expect. It's too bad that's the norm in poker."
+  },
+  "look": {
+    "color": "#c23a4a",
+    "face": {
+      "x": 0.457,
+      "y": 0.135,
+      "size": 0.164
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      4,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 75,
+    "bluffType": 3,
+    "reading": 2,
+    "changeType": 1,
+    "tell": {
+      "when": "noPair",
+      "chance": 30,
+      "reveals": 0
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Do you mind if I cheat?",
+    "swap": "7, please!",
+    "keep": "These cards are terrible!",
+    "call": "Raise.",
+    "raise": "Call.",
+    "raise2": "I call by two.",
+    "drop": "All in!",
+    "allIn": "I fold.",
+    "busted": "Hooray, I won!"
+  }
+}

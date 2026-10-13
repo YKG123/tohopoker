@@ -1,0 +1,77 @@
+{
+  "id": "raiko",
+  "name": "Raiko",
+  "fullName": "Raiko Horikawa",
+  "order": 60,
+  "stats": {
+    "strictness": 2,
+    "aggression": 4,
+    "unpredictability": 4,
+    "comment": "Raiko keeps the table's rhythm. Fall out of step and she'll drum you out."
+  },
+  "look": {
+    "color": "#c22a2a",
+    "face": {
+      "x": 0.507,
+      "y": 0.136,
+      "size": 0.133
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      5,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 73,
+    "bluffType": 3,
+    "reading": 1,
+    "changeType": 1,
+    "tell": {
+      "when": "twoPairOrTrips",
+      "chance": 40,
+      "reveals": 2
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Drums are the original instrument.",
+    "swap": "{n}!",
+    "keep": "Hold.",
+    "call": "Call.",
+    "raise": "Raise!",
+    "raise2": "Raise two!",
+    "drop": "Nope.",
+    "allIn": "All in!",
+    "busted": "It's over."
+  }
+}

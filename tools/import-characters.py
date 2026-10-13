@@ -1,4 +1,5 @@
 """One-time importer: builds src/characters/<id>/ (character.json + webp sprites) from ../sprites.
+The extra cast is in import-extras.py, which reuses write().
 
 After this runs, each character.json is the source of truth - edit it directly.
 Re-running overwrites characters listed in CAST, so only do that on purpose.
@@ -69,7 +70,7 @@ COMPANIONS = {'reisen': ('Tewi', (0.453, 0.223))}
 # Same rules as ../convert_stats.py (see "AI Stats - Poker Face Up format.txt").
 CALL = {1: [0, 4, 5, 7, 7, 8, 9], 2: [0, 3, 5, 7, 7, 8, 9], 3: [0, 3, 4, 7, 7, 8, 9], 4: [0, 3, 4, 6, 7, 7, 9], 5: [0, 2, 3, 6, 7, 7, 8]}
 RAISE = {1: [0, 1, 2, 4, 5, 6, 7], 2: [0, 2, 3, 4, 5, 6, 8], 3: [0, 2, 3, 5, 6, 7, 8], 4: [0, 2, 4, 5, 7, 8, 9], 5: [0, 3, 4, 5, 7, 8, 9]}
-TELL_REVEALS = {'noPair': 0, 'onePair': 1, 'twoPairOrTrips': 2, 'straightOrBetter': 4}
+TELL_REVEALS = {'noPair': 0, 'onePair': 1, 'twoPairOrTrips': 2, 'straightOrBetter': 4, 'never': 0}
 EMOTIONS = ['Neutral', 'Win', 'Lose', 'Tell']
 
 
@@ -82,21 +83,23 @@ def save_sprites(src_dir, dest_dir, prefix=''):
         Image.open(os.path.join(src_dir, f'{e}.png')).save(os.path.join(dest_dir, f'{prefix}{e.lower()}.webp'), quality=88, method=6)
 
 
-for cid, name, full, s, a, u, tell, color, face, comment, lines in CAST:
+def write(cid, name, full, s, a, u, tell, color, face, comment, lines, order, face_size=0.15):
+    """Writes src/characters/<cid>/: sprites from ../sprites/<name>/ and character.json.
+    `lines` is greeting, swap, keep, call, raise, raise2, drop, then optionally allIn and busted."""
     dest = os.path.join(OUT, cid)
     os.makedirs(dest, exist_ok=True)
-    save_sprites(os.path.join(SPRITES, 'Reisen' if cid == 'reisen' else name), dest)
+    save_sprites(os.path.join(SPRITES, name), dest)
     call = pad(CALL[s])
     reading = 3 if s >= 4 else 2 if s == 3 else 1
     data = {
         'id': cid,
         'name': name,
         'fullName': full,
-        'order': [c[0] for c in CAST].index(cid) + 1,
+        'order': order,
         'stats': {'strictness': s, 'aggression': a, 'unpredictability': u, 'comment': comment},
         'look': {
             'color': color,
-            'face': {'x': face[0], 'y': face[1], 'size': 0.15},
+            'face': {'x': face[0], 'y': face[1], 'size': face_size},
             'sprites': {e.lower(): f'{e.lower()}.webp' for e in EMOTIONS},
         },
         'ai': {
@@ -109,7 +112,7 @@ for cid, name, full, s, a, u, tell, color, face, comment, lines in CAST:
             'tell': {'when': tell, 'chance': 60 - 10 * s, 'reveals': TELL_REVEALS[tell]},
             'randomBetting': False,
         },
-        'lines': dict(zip(['greeting', 'swap', 'keep', 'call', 'raise', 'raise2', 'drop'], lines)),
+        'lines': dict(zip(['greeting', 'swap', 'keep', 'call', 'raise', 'raise2', 'drop', 'allIn', 'busted'], lines)),
     }
     if cid in COMPANIONS:
         cname, cface = COMPANIONS[cid]
@@ -123,3 +126,8 @@ for cid, name, full, s, a, u, tell, color, face, comment, lines in CAST:
         json.dump(data, f, indent=2, ensure_ascii=False)
         f.write('\n')
     print('wrote', cid)
+
+
+if __name__ == '__main__':
+    for i, entry in enumerate(CAST):
+        write(*entry, order=i + 1)

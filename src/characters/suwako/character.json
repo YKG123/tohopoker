@@ -1,0 +1,77 @@
+{
+  "id": "suwako",
+  "name": "Suwako",
+  "fullName": "Suwako Moriya",
+  "order": 31,
+  "stats": {
+    "strictness": 5,
+    "aggression": 2,
+    "unpredictability": 3,
+    "comment": "After losing her shrine, Suwako won't let anything else slip away. Who said we were friends?"
+  },
+  "look": {
+    "color": "#c9a64a",
+    "face": {
+      "x": 0.42,
+      "y": 0.225,
+      "size": 0.164
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      2,
+      3,
+      6,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 61,
+    "bluffType": 2,
+    "reading": 3,
+    "changeType": 2,
+    "tell": {
+      "when": "onePair",
+      "chance": 10,
+      "reveals": 1
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Let's have a poker festival!'",
+    "swap": "{n} card{s}.",
+    "keep": "Keeping 'em.",
+    "call": "Call.",
+    "raise": "Raise.",
+    "raise2": "Who said we were friends?",
+    "drop": "Take it.",
+    "allIn": "All in. I won't lose this!'",
+    "busted": "Not again..."
+  }
+}

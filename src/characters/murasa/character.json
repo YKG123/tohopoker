@@ -1,0 +1,77 @@
+{
+  "id": "murasa",
+  "name": "Murasa",
+  "fullName": "Minamitsu Murasa",
+  "order": 43,
+  "stats": {
+    "strictness": 3,
+    "aggression": 4,
+    "unpredictability": 2,
+    "comment": "Murasa doesn't care how big your stack is. It only takes a well-placed crack in the hull for it all to capsize."
+  },
+  "look": {
+    "color": "#2a5a9e",
+    "face": {
+      "x": 0.457,
+      "y": 0.216,
+      "size": 0.138
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      4,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 69,
+    "bluffType": 1,
+    "reading": 2,
+    "changeType": 3,
+    "tell": {
+      "when": "twoPairOrTrips",
+      "chance": 30,
+      "reveals": 2
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "All aboard!",
+    "swap": "{n} card{s}!",
+    "keep": "Holding em.",
+    "call": "Call.",
+    "raise": "Raise!",
+    "raise2": "Raise two! Full sail!",
+    "drop": "Abandon ship!",
+    "allIn": "All in!",
+    "busted": "Sunk, again..."
+  }
+}

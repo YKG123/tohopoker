@@ -1,0 +1,77 @@
+{
+  "id": "chen",
+  "name": "Chen",
+  "fullName": "Chen",
+  "order": 22,
+  "stats": {
+    "strictness": 1,
+    "aggression": 3,
+    "unpredictability": 5,
+    "comment": "Chen came along because Ran did. Nobody has explained the rules to her yet."
+  },
+  "look": {
+    "color": "#c0392b",
+    "face": {
+      "x": 0.449,
+      "y": 0.138,
+      "size": 0.18
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      5,
+      6,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      5,
+      6,
+      7,
+      7,
+      7,
+      7,
+      7
+    ],
+    "raiseAvg": 60,
+    "bluffType": 2,
+    "reading": 1,
+    "changeType": 1,
+    "tell": {
+      "when": "noPair",
+      "chance": 50,
+      "reveals": 0
+    },
+    "randomBetting": true
+  },
+  "lines": {
+    "greeting": "Ran-sama said I could play!",
+    "swap": "{n} card{s}, nya!",
+    "keep": "I'll keep 'em!",
+    "call": "Call, nya!",
+    "raise": "Raise!",
+    "raise2": "Raise two! Nyaa!",
+    "drop": "Nyaa... I fold.",
+    "allIn": "All in, nya!",
+    "busted": "Ran-samaaa!"
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "id": "yuugi",
+  "name": "Yuugi",
+  "fullName": "Yuugi Hoshiguma",
+  "order": 35,
+  "stats": {
+    "strictness": 1,
+    "aggression": 4,
+    "unpredictability": 5,
+    "comment": "Yuugi's strategy is as harmful to herself as it is to others. Don't feel bad, she's the one who came here drunk."
+  },
+  "look": {
+    "color": "#d4562c",
+    "face": {
+      "x": 0.467,
+      "y": 0.138,
+      "size": 0.138
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      4,
+      5,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 75,
+    "bluffType": 3,
+    "reading": 1,
+    "changeType": 1,
+    "tell": {
+      "when": "straightOrBetter",
+      "chance": 50,
+      "reveals": 4
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Let's party!",
+    "swap": "Gimme {n}!",
+    "keep": "Keeping 'em. Hic.",
+    "call": "Call!",
+    "raise": "Raise!",
+    "raise2": "Raise two! Hah!",
+    "drop": "Nah.",
+    "allIn": "All in! Hahaha!",
+    "busted": "Hah! Good game. Drinks on you!"
+  }
+}

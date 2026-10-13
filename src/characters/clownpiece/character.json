@@ -1,0 +1,77 @@
+{
+  "id": "clownpiece",
+  "name": "Clownpiece",
+  "fullName": "Clownpiece",
+  "order": 65,
+  "stats": {
+    "strictness": 2,
+    "aggression": 1,
+    "unpredictability": 5,
+    "comment": "Clownpiece is a fairy from hell. Expect the unexpected, then expect worse."
+  },
+  "look": {
+    "color": "#c23a8a",
+    "face": {
+      "x": 0.523,
+      "y": 0.251,
+      "size": 0.144
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      5,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      1,
+      2,
+      4,
+      5,
+      6,
+      7,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 60,
+    "bluffType": 3,
+    "reading": 1,
+    "changeType": 1,
+    "tell": {
+      "when": "straightOrBetter",
+      "chance": 40,
+      "reveals": 4
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "It's lunatic time!",
+    "swap": "{n}!",
+    "keep": "Keeping these! Ha!",
+    "call": "Call!",
+    "raise": "Raise!",
+    "raise2": "Raise two! It's lunatic time!",
+    "drop": "Boring!",
+    "allIn": "All in!",
+    "busted": "Back to hell, I guess!"
+  }
+}

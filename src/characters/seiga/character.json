@@ -1,0 +1,77 @@
+{
+  "id": "seiga",
+  "name": "Seiga",
+  "fullName": "Seiga Kaku",
+  "order": 49,
+  "stats": {
+    "strictness": 1,
+    "aggression": 1,
+    "unpredictability": 5,
+    "comment": "Eh, what's that? It's my turn again? Even when money is on the line, Seiga just can't bring herself to focus."
+  },
+  "look": {
+    "color": "#3a8ac2",
+    "face": {
+      "x": 0.442,
+      "y": 0.151,
+      "size": 0.138
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      4,
+      5,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      1,
+      2,
+      4,
+      5,
+      6,
+      7,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 60,
+    "bluffType": 3,
+    "reading": 1,
+    "changeType": 1,
+    "tell": {
+      "when": "onePair",
+      "chance": 50,
+      "reveals": 1
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Oh my, a little game?",
+    "swap": "Hm? Oh, {n}.",
+    "keep": "These are fine, I suppose.",
+    "call": "Call~",
+    "raise": "Raise~",
+    "raise2": "Raise two? Why not~",
+    "drop": "Oh, was it my turn? Fold~",
+    "allIn": "All in~ How fun!",
+    "busted": "Yoshika, carry me home~"
+  }
+}

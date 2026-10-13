@@ -56,9 +56,17 @@ export type Music = 'bgm1' | 'bgm2' | 'bgm3' | 'select' | 'record';
 
 const sfxCache = new Map<string, HTMLAudioElement>();
 let bgm: HTMLAudioElement | null = null;
+let bgmTrack: Music | null = null;
 let bgmOn = true;
+let sfxMuted = false;
+
+/** Silences sound effects (while a round is fast-forwarded); music carries on. */
+export function setSfxMuted(muted: boolean): void {
+  sfxMuted = muted;
+}
 
 export function play(name: Sfx): void {
+  if (sfxMuted) return;
   let a = sfxCache.get(name);
   if (!a) {
     a = new Audio(local(`${base}ui/sound/${name}.mp3`));
@@ -73,9 +81,15 @@ export function setBgmEnabled(on: boolean): void {
   if (!on) stopBgm();
 }
 
+/** Starts a track; one that's already playing carries on (moving between menus that share it). */
 export function playBgm(track: Music, volume = 1): void {
+  if (bgm && bgmTrack === track) {
+    bgm.volume = volume;
+    return;
+  }
   stopBgm();
   if (!bgmOn) return;
+  bgmTrack = track;
   bgm = new Audio(`${base}ui/sound/${track}.mp3`);
   bgm.loop = true;
   bgm.volume = volume;
@@ -89,4 +103,5 @@ export function setBgmVolume(volume: number): void {
 export function stopBgm(): void {
   bgm?.pause();
   bgm = null;
+  bgmTrack = null;
 }

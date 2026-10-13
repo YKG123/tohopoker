@@ -1,0 +1,77 @@
+{
+  "id": "utsuho",
+  "name": "Utsuho",
+  "fullName": "Utsuho Reiuji",
+  "order": 38,
+  "stats": {
+    "strictness": 2,
+    "aggression": 5,
+    "unpredictability": 4,
+    "comment": "Utsuho barely found her way to the table. Now she's going nuclear on every hand."
+  },
+  "look": {
+    "color": "#2a2a2a",
+    "face": {
+      "x": 0.492,
+      "y": 0.134,
+      "size": 0.15
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      5,
+      7,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 78,
+    "bluffType": 3,
+    "reading": 1,
+    "changeType": 1,
+    "tell": {
+      "when": "straightOrBetter",
+      "chance": 40,
+      "reveals": 4
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Unyu? Is this the card game?",
+    "swap": "Uh... {n}?",
+    "keep": "Keeping these!",
+    "call": "Call!",
+    "raise": "Raise!",
+    "raise2": "Raise two!",
+    "drop": "Unyu... I forgot what I had.",
+    "allIn": "All in! Mega Flare!",
+    "busted": "Unyu... Lady Satori's gonna be mad."
+  }
+}

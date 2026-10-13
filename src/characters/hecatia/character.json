@@ -1,0 +1,77 @@
+{
+  "id": "hecatia",
+  "name": "Hecatia",
+  "fullName": "Hecatia Lapislazuli",
+  "order": 67,
+  "stats": {
+    "strictness": 4,
+    "aggression": 1,
+    "unpredictability": 3,
+    "comment": "Hecatia has three bodies and only one seat. She'd rather be playing at all three tables."
+  },
+  "look": {
+    "color": "#c23a3a",
+    "face": {
+      "x": 0.474,
+      "y": 0.21,
+      "size": 0.133
+    },
+    "sprites": {
+      "neutral": "neutral.webp",
+      "win": "win.webp",
+      "lose": "lose.webp",
+      "tell": "tell.webp"
+    }
+  },
+  "ai": {
+    "callMax": [
+      0,
+      3,
+      4,
+      6,
+      7,
+      7,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseMax": [
+      0,
+      1,
+      2,
+      4,
+      5,
+      6,
+      7,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "raiseAvg": 56,
+    "bluffType": 2,
+    "reading": 3,
+    "changeType": 2,
+    "tell": {
+      "when": "onePair",
+      "chance": 20,
+      "reveals": 1
+    },
+    "randomBetting": false
+  },
+  "lines": {
+    "greeting": "Hiya~ Room for three?",
+    "swap": "{n}, please~",
+    "keep": "Keeping these~",
+    "call": "Call~",
+    "raise": "Raise~",
+    "raise2": "Raise two~",
+    "drop": "Eh, nah~",
+    "allIn": "All in~",
+    "busted": "Back to hell~ See ya~"
+  }
+}
