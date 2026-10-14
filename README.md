@@ -19,7 +19,11 @@ npm install
 npm run dev        # http://localhost:5173
 npm run build      # static site in dist/ (works from any folder or static host)
 npm run check      # type-check
+npm run deploy     # build and publish dist/ to the gh-pages branch
 ```
+
+Every push to `master` also deploys through GitHub Actions (`.github/workflows/deploy.yml`). In the repo's
+Settings → Pages, set the source to *Deploy from a branch*, `gh-pages`, `/ (root)`.
 
 Dev URL flags: `?speed=10` fast-forwards the animations, `?autoplay` plays your seat for you, `?net=local` makes
 online rooms work between tabs of one browser with no internet (for testing).

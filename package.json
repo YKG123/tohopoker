@@ -6,7 +6,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "check": "tsc",
-    "extract-ui": "node tools/extract-swf-ui.mjs"
+    "extract-ui": "node tools/extract-swf-ui.mjs",
+    "deploy": "node tools/deploy.mjs"
   },
   "devDependencies": {
     "@types/node": "^18.19.64",
