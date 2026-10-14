@@ -1805,6 +1805,398 @@
   "ox": 51,
   "oy": 51
  },
+ "avatar-giko-1": {
+  "file": "avatar-giko-1.svg",
+  "w": 130.75,
+  "h": 151.85,
+  "ox": -1.85,
+  "oy": -20.5
+ },
+ "avatar-giko-2": {
+  "file": "avatar-giko-2.svg",
+  "w": 130.75,
+  "h": 151.85,
+  "ox": -1.85,
+  "oy": -20.5
+ },
+ "avatar-giko-3": {
+  "file": "avatar-giko-3.svg",
+  "w": 130.75,
+  "h": 151.85,
+  "ox": -1.85,
+  "oy": -20.5
+ },
+ "avatar-giko-4": {
+  "file": "avatar-giko-4.svg",
+  "w": 130.75,
+  "h": 151.85,
+  "ox": -1.85,
+  "oy": -20.5
+ },
+ "avatar-giko-5": {
+  "file": "avatar-giko-5.svg",
+  "w": 130.75,
+  "h": 151.85,
+  "ox": -1.85,
+  "oy": -20.5
+ },
+ "avatar-giko-6": {
+  "file": "avatar-giko-6.svg",
+  "w": 130.75,
+  "h": 151.85,
+  "ox": -1.85,
+  "oy": -20.5
+ },
+ "avatar-giko-7": {
+  "file": "avatar-giko-7.svg",
+  "w": 130.75,
+  "h": 151.85,
+  "ox": -1.85,
+  "oy": -20.5
+ },
+ "avatar-giko-8": {
+  "file": "avatar-giko-8.svg",
+  "w": 130.75,
+  "h": 151.85,
+  "ox": -1.85,
+  "oy": -20.5
+ },
+ "avatar-sii-1": {
+  "file": "avatar-sii-1.svg",
+  "w": 130.4,
+  "h": 139.8,
+  "ox": 0.6,
+  "oy": -24.9
+ },
+ "avatar-sii-2": {
+  "file": "avatar-sii-2.svg",
+  "w": 130.4,
+  "h": 139.8,
+  "ox": 0.6,
+  "oy": -24.9
+ },
+ "avatar-sii-3": {
+  "file": "avatar-sii-3.svg",
+  "w": 130.4,
+  "h": 139.8,
+  "ox": 0.6,
+  "oy": -24.9
+ },
+ "avatar-sii-4": {
+  "file": "avatar-sii-4.svg",
+  "w": 130.4,
+  "h": 139.8,
+  "ox": 0.6,
+  "oy": -24.9
+ },
+ "avatar-sii-5": {
+  "file": "avatar-sii-5.svg",
+  "w": 130.4,
+  "h": 139.8,
+  "ox": 0.6,
+  "oy": -24.9
+ },
+ "avatar-sii-6": {
+  "file": "avatar-sii-6.svg",
+  "w": 130.4,
+  "h": 139.8,
+  "ox": 0.6,
+  "oy": -24.9
+ },
+ "avatar-sii-7": {
+  "file": "avatar-sii-7.svg",
+  "w": 130.4,
+  "h": 139.8,
+  "ox": 0.6,
+  "oy": -24.9
+ },
+ "avatar-sii-8": {
+  "file": "avatar-sii-8.svg",
+  "w": 130.4,
+  "h": 139.8,
+  "ox": 0.6,
+  "oy": -24.9
+ },
+ "avatar-morara-1": {
+  "file": "avatar-morara-1.svg",
+  "w": 119.15,
+  "h": 145.05,
+  "ox": -11.15,
+  "oy": -21.95
+ },
+ "avatar-morara-2": {
+  "file": "avatar-morara-2.svg",
+  "w": 119.15,
+  "h": 145.05,
+  "ox": -11.15,
+  "oy": -21.95
+ },
+ "avatar-morara-3": {
+  "file": "avatar-morara-3.svg",
+  "w": 119.15,
+  "h": 145.05,
+  "ox": -11.15,
+  "oy": -21.95
+ },
+ "avatar-morara-4": {
+  "file": "avatar-morara-4.svg",
+  "w": 119.15,
+  "h": 145.05,
+  "ox": -11.15,
+  "oy": -21.95
+ },
+ "avatar-morara-5": {
+  "file": "avatar-morara-5.svg",
+  "w": 119.15,
+  "h": 145.05,
+  "ox": -11.15,
+  "oy": -21.95
+ },
+ "avatar-morara-6": {
+  "file": "avatar-morara-6.svg",
+  "w": 119.15,
+  "h": 145.05,
+  "ox": -11.15,
+  "oy": -21.95
+ },
+ "avatar-morara-7": {
+  "file": "avatar-morara-7.svg",
+  "w": 119.15,
+  "h": 145.05,
+  "ox": -11.15,
+  "oy": -21.95
+ },
+ "avatar-morara-8": {
+  "file": "avatar-morara-8.svg",
+  "w": 119.15,
+  "h": 145.05,
+  "ox": -11.15,
+  "oy": -21.95
+ },
+ "avatar-shin-1": {
+  "file": "avatar-shin-1.svg",
+  "w": 97.3,
+  "h": 144.8,
+  "ox": -14.4,
+  "oy": -19.9
+ },
+ "avatar-shin-2": {
+  "file": "avatar-shin-2.svg",
+  "w": 97.3,
+  "h": 144.8,
+  "ox": -14.4,
+  "oy": -19.9
+ },
+ "avatar-shin-3": {
+  "file": "avatar-shin-3.svg",
+  "w": 97.3,
+  "h": 144.8,
+  "ox": -14.4,
+  "oy": -19.9
+ },
+ "avatar-shin-4": {
+  "file": "avatar-shin-4.svg",
+  "w": 97.3,
+  "h": 144.8,
+  "ox": -14.4,
+  "oy": -19.9
+ },
+ "avatar-shin-5": {
+  "file": "avatar-shin-5.svg",
+  "w": 97.3,
+  "h": 144.8,
+  "ox": -14.4,
+  "oy": -19.9
+ },
+ "avatar-shin-6": {
+  "file": "avatar-shin-6.svg",
+  "w": 97.3,
+  "h": 144.8,
+  "ox": -14.4,
+  "oy": -19.9
+ },
+ "avatar-shin-7": {
+  "file": "avatar-shin-7.svg",
+  "w": 97.3,
+  "h": 144.8,
+  "ox": -14.4,
+  "oy": -19.9
+ },
+ "avatar-shin-8": {
+  "file": "avatar-shin-8.svg",
+  "w": 97.3,
+  "h": 144.8,
+  "ox": -14.4,
+  "oy": -19.9
+ },
+ "avatar-fun-1": {
+  "file": "avatar-fun-1.svg",
+  "w": 147.35,
+  "h": 148.9,
+  "ox": 3.05,
+  "oy": -20.85
+ },
+ "avatar-fun-2": {
+  "file": "avatar-fun-2.svg",
+  "w": 147.35,
+  "h": 148.9,
+  "ox": 3.05,
+  "oy": -20.85
+ },
+ "avatar-fun-3": {
+  "file": "avatar-fun-3.svg",
+  "w": 147.35,
+  "h": 148.9,
+  "ox": 3.05,
+  "oy": -20.85
+ },
+ "avatar-fun-4": {
+  "file": "avatar-fun-4.svg",
+  "w": 147.35,
+  "h": 148.9,
+  "ox": 3.05,
+  "oy": -20.85
+ },
+ "avatar-fun-5": {
+  "file": "avatar-fun-5.svg",
+  "w": 147.35,
+  "h": 148.9,
+  "ox": 3.05,
+  "oy": -20.85
+ },
+ "avatar-fun-6": {
+  "file": "avatar-fun-6.svg",
+  "w": 147.35,
+  "h": 148.9,
+  "ox": 3.05,
+  "oy": -20.85
+ },
+ "avatar-fun-7": {
+  "file": "avatar-fun-7.svg",
+  "w": 147.35,
+  "h": 148.9,
+  "ox": 3.05,
+  "oy": -20.85
+ },
+ "avatar-fun-8": {
+  "file": "avatar-fun-8.svg",
+  "w": 147.35,
+  "h": 148.9,
+  "ox": 3.05,
+  "oy": -20.85
+ },
+ "avatar-zu-1": {
+  "file": "avatar-zu-1.svg",
+  "w": 132.55,
+  "h": 149.65,
+  "ox": -5.15,
+  "oy": -15.05
+ },
+ "avatar-zu-2": {
+  "file": "avatar-zu-2.svg",
+  "w": 132.55,
+  "h": 149.65,
+  "ox": -5.15,
+  "oy": -15.05
+ },
+ "avatar-zu-3": {
+  "file": "avatar-zu-3.svg",
+  "w": 132.55,
+  "h": 149.65,
+  "ox": -5.15,
+  "oy": -15.05
+ },
+ "avatar-zu-4": {
+  "file": "avatar-zu-4.svg",
+  "w": 132.55,
+  "h": 149.65,
+  "ox": -5.15,
+  "oy": -15.05
+ },
+ "avatar-zu-5": {
+  "file": "avatar-zu-5.svg",
+  "w": 132.55,
+  "h": 149.65,
+  "ox": -5.15,
+  "oy": -15.05
+ },
+ "avatar-zu-6": {
+  "file": "avatar-zu-6.svg",
+  "w": 132.55,
+  "h": 149.65,
+  "ox": -5.15,
+  "oy": -15.05
+ },
+ "avatar-zu-7": {
+  "file": "avatar-zu-7.svg",
+  "w": 132.55,
+  "h": 149.65,
+  "ox": -5.15,
+  "oy": -15.05
+ },
+ "avatar-zu-8": {
+  "file": "avatar-zu-8.svg",
+  "w": 132.55,
+  "h": 149.65,
+  "ox": -5.15,
+  "oy": -15.05
+ },
+ "avatar-syobo-1": {
+  "file": "avatar-syobo-1.svg",
+  "w": 118.75,
+  "h": 120.2,
+  "ox": -5.45,
+  "oy": -41.9
+ },
+ "avatar-syobo-2": {
+  "file": "avatar-syobo-2.svg",
+  "w": 118.75,
+  "h": 120.2,
+  "ox": -5.45,
+  "oy": -41.9
+ },
+ "avatar-syobo-3": {
+  "file": "avatar-syobo-3.svg",
+  "w": 118.75,
+  "h": 120.2,
+  "ox": -5.45,
+  "oy": -41.9
+ },
+ "avatar-syobo-4": {
+  "file": "avatar-syobo-4.svg",
+  "w": 118.75,
+  "h": 120.2,
+  "ox": -5.45,
+  "oy": -41.9
+ },
+ "avatar-syobo-5": {
+  "file": "avatar-syobo-5.svg",
+  "w": 118.75,
+  "h": 120.2,
+  "ox": -5.45,
+  "oy": -41.9
+ },
+ "avatar-syobo-6": {
+  "file": "avatar-syobo-6.svg",
+  "w": 118.75,
+  "h": 120.2,
+  "ox": -5.45,
+  "oy": -41.9
+ },
+ "avatar-syobo-7": {
+  "file": "avatar-syobo-7.svg",
+  "w": 118.75,
+  "h": 120.2,
+  "ox": -5.45,
+  "oy": -41.9
+ },
+ "avatar-syobo-8": {
+  "file": "avatar-syobo-8.svg",
+  "w": 118.75,
+  "h": 120.2,
+  "ox": -5.45,
+  "oy": -41.9
+ },
  "btn-hold0-up": {
   "file": "btn-hold0-up.svg",
   "w": 64,

@@ -95,12 +95,13 @@ export class OpponentSeat {
     const emotion = POSE_EMOTION[pose];
     // Seats right of center face the table mirrored, as seat 3 does in the SWF (_xscale = -100).
     const mirror = flip ? 'scaleX(-1)' : '';
-    await placeFigure(this.figure, c.art[emotion], c.look.face, x, faceY, faceH);
+    const big = c.look.figureScale ?? 1;
+    await placeFigure(this.figure, c.art[emotion], c.look.face, x, faceY + (c.look.figureDrop ?? 0) * faceH, faceH * big);
     this.figure.style.transform = mirror;
     // Widest figures stand at the back, so big wings and sleeves never cover a narrower neighbor's face.
     // Measured on the neutral sprite so a seat keeps its place whatever the pose.
     if (!this.wrap.style.zIndex) {
-      const width = await figureWidth(c.art.neutral, c.look.face);
+      const width = (await figureWidth(c.art.neutral, c.look.face)) * big;
       this.wrap.style.zIndex = String(Math.max(1, 5000 - Math.round(width * 100)));
     }
     if (this.companion && c.companionArt && c.look.companion) {
@@ -316,12 +317,16 @@ export class Dealer {
   }
 
   /** Button: the sign becomes a button; resolves when it's clicked. */
-  async button(text: string): Promise<void> {
+  /** `until` presses it for you (a decision timer running out). */
+  async button(text: string, until?: Promise<unknown>): Promise<void> {
     this.sign.style.display = 'none';
     await this.clip.play(24, 27);
     this.write(text);
     this.sign.classList.add('pressable');
-    await new Promise<void>((resolve) => this.sign.addEventListener('click', () => resolve(), { once: true }));
+    await new Promise<void>((resolve) => {
+      this.sign.addEventListener('click', () => resolve(), { once: true });
+      until?.then(() => resolve());
+    });
     this.sign.classList.remove('pressable');
     play('card');
     this.sign.style.display = 'none';
@@ -460,10 +465,12 @@ export class Buttons {
   }
 
   /** Shows the given buttons; resolves with the one pressed. */
-  /** `labels` relabels a button over its baked-in text (Call becomes All In). */
-  async choose<T extends ButtonName>(names: T[], anywhere = false, labels: Partial<Record<ButtonName, string>> = {}): Promise<T> {
+  /** `labels` relabels a button over its baked-in text (Call becomes All In); `until` answers for the player. */
+  async choose<T extends ButtonName>(names: T[], anywhere = false, labels: Partial<Record<ButtonName, string>> = {},
+    until?: Promise<T>): Promise<T> {
     this.root.replaceChildren();
     const result = await new Promise<T>((resolve) => {
+      until?.then(resolve);
       for (const name of names) {
         const b = el('button', 'swf-button', this.root);
         b.setAttribute('aria-label', name);

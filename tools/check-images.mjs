@@ -51,6 +51,8 @@ for (let m = 0; m < matches; m++) {
   await page.waitForTimeout(800);
   await click(260, 130);
   await page.waitForTimeout(400);
+  await click(200, 88); // Singleplayer
+  await page.waitForTimeout(400);
   await click(342, 250); // Start (cash game)
   await page.waitForTimeout(400);
   await click(380, 180); // Auto

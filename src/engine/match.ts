@@ -2,7 +2,7 @@
 // size. All presentation goes through MatchView so the rules can also run headless.
 // A cash game is a series of rounds at one table (playMatch); tournaments (tournament.ts) run many tables
 // round by round with playRound.
-import { chooseBet, chooseHolds, rollTell, suggestHolds, type BetAction } from './ai';
+import { type BetAction, chooseBet, chooseHolds, rollTell, suggestHolds } from './ai';
 import { type Card, newDeck, shuffle, sortHand } from './cards';
 import { evaluate, handName } from './hand';
 import type { CharacterData } from './types';
@@ -36,9 +36,22 @@ export interface Seat {
   holdCount: number;
   faceDown: number;
   bluffing: boolean;
+  /** This round's swap: which cards were kept (for showing someone else's swap from their side). */
+  holds?: boolean[];
 }
 
 export type PlayerBet = 'raise2' | 'raise' | 'call' | 'drop';
+export const BET_ACTION: Record<PlayerBet, BetAction> = { drop: 0, call: 1, raise: 2, raise2: 3 };
+
+/**
+ * People playing a character's seat from elsewhere (online play). While `controls` says so, their swap and
+ * bet come from here instead of the character's AI; a null answer (gone, or out of time) lets the AI decide.
+ */
+export interface SeatControl {
+  controls(seat: Seat): boolean;
+  holds(seat: Seat, hint: boolean[]): Promise<boolean[] | null>;
+  bet(seat: Seat, options: PlayerBet[], rate: number, allIn: boolean): Promise<PlayerBet | null>;
+}
 
 export function newSeat(index: number, character: CharacterData | null, coins: number): Seat {
   return {
@@ -173,7 +186,7 @@ export function settle(seats: Seat[], father: number): number[] {
  */
 export async function playRound(
   table: Table, view: MatchView, random: () => number, stats: PlayerStats | null,
-  placeOf: (out: Seat[]) => number[],
+  placeOf: (out: Seat[]) => number[], control?: SeatControl,
 ): Promise<Seat[]> {
   const { seats, ante } = table;
   const n = seats.length;
@@ -189,7 +202,7 @@ export async function playRound(
   let rate = 1;
   const allHold = seats.map(() => false);
   for (const s of seats) {
-    Object.assign(s, { dropped: s.busted, bet: 0, paid: 0, allIn: false, holdCount: 0, faceDown: 0, bluffing: false, hand: [], score: 0 });
+    Object.assign(s, { dropped: s.busted, bet: 0, paid: 0, allIn: false, holdCount: 0, faceDown: 0, bluffing: false, hand: [], score: 0, holds: undefined });
     if (s.busted) continue;
     s.bet = 1;
     s.paid = Math.min(ante, s.coins);
@@ -220,20 +233,26 @@ export async function playRound(
     const s = seats[turn];
     if (!s.busted) {
       if (s.character) {
-        const holds = chooseHolds(s.hand, s.character.ai, random);
+        const person = control?.controls(s) ? await control.holds(s, suggestHolds(s.hand)) : null;
+        const holds = person ?? chooseHolds(s.hand, s.character.ai, random);
+        s.holds = holds;
         s.holdCount = holds.filter(Boolean).length;
         if (s.holdCount < 5) {
           s.hand.forEach((c, i) => !holds[i] && discards.push(c));
-          s.hand = sortHand(s.hand.map((c, i) => (holds[i] ? c : draw())));
+          // New cards land where the old ones were (the swapper's own view deals them there), sorted after.
+          s.hand = s.hand.map((c, i) => (holds[i] ? c : draw()));
         } else {
           allHold[turn] = true;
         }
-        s.score = evaluate(s.hand);
-        const tell = rollTell(s.character.ai, s.score, random);
+        s.score = evaluate(sortHand([...s.hand]));
+        // People playing a character don't show the character's tells.
+        const tell = !control?.controls(s) && rollTell(s.character.ai, s.score, random);
         if (tell) s.faceDown = s.character.ai.tell.reveals;
         await view.opponentSwap(s, 5 - s.holdCount, tell);
+        sortHand(s.hand);
       } else {
         const holds = await view.askHolds(s.hand, suggestHolds(s.hand));
+        s.holds = holds;
         if (holds.every(Boolean)) allHold[turn] = true;
         s.holdCount = holds.filter(Boolean).length;
         s.hand.forEach((c, i) => !holds[i] && discards.push(c));
@@ -252,6 +271,9 @@ export async function playRound(
     stats.bestHand = Math.max(stats.bestHand, human.score);
   }
   if (human && human.score >= 5 && Math.floor(random() * 100) + 1 >= 75) human.faceDown = 5; // the player's own tell
+  for (const s of seats) {
+    if (!s.busted && control?.controls(s) && s.score >= 5 && Math.floor(random() * 100) + 1 >= 75) s.faceDown = 5;
+  }
   await view.betRoundStart(seats, raiser);
 
   // Calling more than you have puts you all in, for what you have; side pots sort it out at the showdown.
@@ -268,12 +290,22 @@ export async function playRound(
     const answerable = seats.some((x) => x !== s && !x.dropped && !x.allIn);
     return answerable ? Math.min(TOP_RATE, s.bet + Math.floor(s.coins / ante)) : rate;
   };
+  // What a person may do: the SWF's button sets.
+  const betOptions = (s: Seat): PlayerBet[] => {
+    const maxRate = maxRateFor(s);
+    return rate >= maxRate ? ['call', 'drop']
+      : rate + 1 >= maxRate ? ['raise', 'call', 'drop']
+      : rate === 1 ? ['raise2', 'raise', 'call']
+      : ['raise2', 'raise', 'call', 'drop'];
+  };
   turn = raiser;
   do {
     const s = seats[turn];
     if (!s.dropped && !s.allIn) {
       if (s.character) {
-        const { action, bluffing } = chooseBet(s.character.ai, {
+        const person = control?.controls(s)
+          ? await control.bet(s, betOptions(s), rate, s.coins < (rate - s.bet) * ante) : null;
+        const { action, bluffing } = person ? { action: BET_ACTION[person], bluffing: false } : chooseBet(s.character.ai, {
           seat: turn, score: s.score, rate, maxRate: Math.max(rate, maxRateFor(s)), raiser,
           bet: seats.map((x) => x.bet), dropped: seats.map((x) => x.dropped), busted: seats.map((x) => x.busted),
           allHold, faceDown: seats.map((x) => x.faceDown), bluffing: s.bluffing,
@@ -290,13 +322,7 @@ export async function playRound(
         }
         await view.opponentBet(s, action);
       } else {
-        const maxRate = maxRateFor(s);
-        const options: PlayerBet[] =
-          rate >= maxRate ? ['call', 'drop']
-          : rate + 1 >= maxRate ? ['raise', 'call', 'drop']
-          : rate === 1 ? ['raise2', 'raise', 'call']
-          : ['raise2', 'raise', 'call', 'drop'];
-        const choice = await view.askBet(options, seats, rate, s.coins < (rate - s.bet) * ante);
+        const choice = await view.askBet(betOptions(s), seats, rate, s.coins < (rate - s.bet) * ante);
         if (choice === 'drop') {
           s.dropped = true;
         } else {
@@ -374,16 +400,9 @@ export async function playMatch(seats: Seat[], view: MatchView, opts: MatchOptio
     if (seats[0].busted || live(seats).length <= 1 || table.round >= opts.rounds) break;
   }
 
-  // --- Final ranking (frame 979): survivors by coins, then busted seats by how late they went out.
-  const score = (s: Seat) => (s.busted ? s.bustRank : 1e6 + s.coins);
-  const order = [...seats].sort((a, b) => score(b) - score(a) || a.index - b.index);
-  const places: number[] = [];
-  order.forEach((s, i) => {
-    const prev = order[i - 1];
-    places[s.index] = prev && score(prev) === score(s) ? places[prev.index] : i + 1;
-  });
+  const { places, winner } = finalPlaces(seats);
   const result: MatchResult = {
-    ...stats, places, winner: order[0].index, coins: seats.map((s) => s.coins), rounds: table.round, roundLimit: opts.rounds,
+    ...stats, places, winner, coins: seats.map((s) => s.coins), rounds: table.round, roundLimit: opts.rounds,
   };
   const ord = ordinal(places[0]);
   await view.gameSet({
@@ -394,6 +413,18 @@ export async function playMatch(seats: Seat[], view: MatchView, opts: MatchOptio
     won: places[0] === 1,
   }, seats);
   return result;
+}
+
+/** Final ranking (frame 979): survivors by coins, then busted seats by how late they went out (`bustRank`). */
+export function finalPlaces(seats: Seat[]): { places: number[]; winner: number } {
+  const score = (s: Seat) => (s.vacant ? -1 : s.busted ? s.bustRank : 1e6 + s.coins);
+  const order = [...seats].sort((a, b) => score(b) - score(a) || a.index - b.index);
+  const places: number[] = [];
+  order.forEach((s, i) => {
+    const prev = order[i - 1];
+    places[s.index] = prev && score(prev) === score(s) ? places[prev.index] : i + 1;
+  });
+  return { places, winner: order[0].index };
 }
 
 export const ordinal = (n: number): string => {

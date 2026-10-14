@@ -11,7 +11,7 @@ import { fitText } from '../ui/table';
 import { Clip, el, frames, layer, place, textField, wait } from '../ui/stage';
 
 /** A clickable invisible region over baked-in art. */
-function hotspot(parent: HTMLElement, x: number, y: number, w: number, h: number, label: string, onClick: () => void): HTMLButtonElement {
+export function hotspot(parent: HTMLElement, x: number, y: number, w: number, h: number, label: string, onClick: () => void): HTMLButtonElement {
   const b = el('button', 'hotspot', parent);
   b.setAttribute('aria-label', label);
   place(b, x, y, w, h);
@@ -220,7 +220,7 @@ export function selectScreen(stage: HTMLElement, PICK: number, noun = 'opponent'
 export type GameSetup = { mode: 'cash'; cash: CashSettings } | { mode: 'tournament'; tournament: TournamentConfig };
 
 /** Covers the baked-in "Select Characters" with another title in the same band. */
-function retitle(root: HTMLElement, text: string, cls = 'select-title'): void {
+export function retitle(root: HTMLElement, text: string, cls = 'select-title'): void {
   place(el('div', `title-cover ${cls}`, root), 40, 6, 320, 36).textContent = text;
 }
 

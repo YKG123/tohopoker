@@ -17,6 +17,10 @@ export interface CharacterLook {
   color: string;
   face: FaceBox;
   sprites: Record<Emotion, string>;
+  /** Draws the figure at the table this much bigger than its face box alone would (default 1). */
+  figureScale?: number;
+  /** Seats the figure this many face heights lower at the table (default 0). */
+  figureDrop?: number;
   /** A sidekick drawn beside the character at the table (e.g. Tewi with Reisen). */
   companion?: { name: string; face: FaceBox; sprites: Record<Emotion, string> };
 }

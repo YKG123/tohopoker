@@ -21,11 +21,13 @@ npm run build      # static site in dist/ (works from any folder or static host)
 npm run check      # type-check
 ```
 
-Dev URL flags: `?speed=10` fast-forwards the animations, `?autoplay` plays your seat for you.
+Dev URL flags: `?speed=10` fast-forwards the animations, `?autoplay` plays your seat for you, `?net=local` makes
+online rooms work between tabs of one browser with no internet (for testing).
 
 ## Game modes
 
-**Open the Game** leads to the Game Mode screen (settings are remembered):
+**Open the Game** offers **Singleplayer**, **Host Room** and **Join Room**. Singleplayer leads to the Game Mode
+screen (settings are remembered):
 
 - **Cash Game**: the original format. Pick 1-5 opponents (up to six at the table, you included) and a length of
   10-50 rounds. The game ends after that many rounds, or sooner if you go broke or only one player is left. Survivors
@@ -45,6 +47,27 @@ Dev URL flags: `?speed=10` fast-forwards the animations, `?autoplay` plays your 
     straight to the results.
 
 Press **Tab** in either mode to show or hide the standings: rank, a strip of each player's face, their stack and table.
+
+### Online
+
+A cash game with friends, peer to peer: no game server, and nothing to sign up for.
+
+- **Host Room**: pick a name and an avatar (the original game's Giko, Shii, Morara, Shin, Fun, Zu or Shobon), and you
+  get a 5-letter room code to send your friends. In the lobby set the number of AI opponents, rounds, and the time
+  for each decision (5-60 seconds, or off). On **Start** you pick the AI opponents on the select screen, everyone
+  sits down in random order, and back in the lobby after the game for another.
+- **Join Room**: name, avatar and the room code. You sit at the table as your avatar under your name, with plain
+  call/raise/fold lines.
+- Out of time, your swap goes in as it stands and your bet is a fold (a call when folding isn't allowed). Your clock is in
+  the corner of your box; when someone else is deciding, their name and clock show where your buttons go. The
+  showdown moves on by itself after a few seconds (anyone can press OK sooner).
+- If someone drops out, an AI plays their seat. Joining again from the same tab (reloading is fine) gets them
+  their seat back at the next hand. Up to six at the table, the host and the AI included.
+- How it connects: rooms are found through public Nostr relays (via [Trystero](https://github.com/dmotz/trystero),
+  pinned at 0.25.4); after that the game goes directly between the browsers over WebRTC. The host's browser runs the
+  game and sends each player only their own cards (others' only once shown down). Free public STUN servers get
+  most home connections through. A few networks (some mobile hotspots and carrier-grade NAT) need a TURN relay,
+  which this doesn't set up.
 
 ## Add a character
 
@@ -89,6 +112,10 @@ reporting any image that fails to load.
 - `src/game/` connects the engine to the screen: `tableView.ts` (the table, timed in original 52fps frames) and `screens.ts`
   (title, game mode, select, record, credit, tournament results). `src/main.ts` runs the cash game and tournament loops.
 - `src/ui/scoreboard.ts` is the Tab standings overlay.
+- `src/net/` is online play: `room.ts` (connecting by room code), `protocol.ts` (messages, seat snapshots),
+  `host.ts` (the host runs the match and relays each event to every player from their seat; `SeatControl` in
+  `match.ts` takes their decisions), `client.ts` (replays it all on the player's own table view), `avatars.ts`,
+  and `online.ts` (the menu flow). The screens are in `src/game/netScreens.ts`.
 - `src/ui/` holds the stage (400×300, zoomed to fit), sprite-frame playback, and the table pieces.
 - `public/ui/` contains the original UI art and sounds. Regenerate them with `npm run extract-ui` (needs JPEXS `ffdec`).
 - `tools/simulate.ts` runs thousands of headless cash games (1-5 opponents) and tournaments to check the rules

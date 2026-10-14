@@ -6,6 +6,8 @@ import { player } from './player';
 import { recordMatch, recordTournament } from './save';
 import { TableView, seatName } from './game/tableView';
 import { bustDialog, creditScreen, fade, modeScreen, recordScreen, selectScreen, titleScreen, tournamentResults } from './game/screens';
+import { playMenu } from './game/netScreens';
+import { hostRoom, joinRoom } from './net/online';
 import { preloadImages } from './ui/portrait';
 import { loadUi, setSfxMuted, stopBgm } from './ui/assets';
 import { RankTracker, type ScoreRow, installScoreboard } from './ui/scoreboard';
@@ -211,6 +213,10 @@ async function run(): Promise<never> {
     } else if (choice === 'record') {
       await recordScreen(stage);
     } else {
+      const play = await playMenu(stage);
+      if (play === 'host') await hostRoom(stage);
+      if (play === 'join') await joinRoom(stage);
+      if (play !== 'single') continue;
       const setup = await modeScreen(stage);
       if (!setup) continue;
       if (setup.mode === 'cash') {

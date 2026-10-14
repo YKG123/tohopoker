@@ -1,6 +1,7 @@
 // Extracts the original Poker Face Up UI (vector art + sounds) from the SWF into public/ui.
 // Usage: node tools/extract-swf-ui.mjs [path/to/game.swf]
-// Requires JPEXS (`ffdec`) on PATH. Character art is NOT taken from the SWF.
+// Requires JPEXS (`ffdec`) on PATH. Touhou character art is NOT taken from the SWF; only the original
+// opponents are, as avatars for online players.
 import { execFileSync } from 'node:child_process';
 import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -26,6 +27,11 @@ const SPRITES = {
   hold: 'DefineSprite_4402_SP_Hold', title: 'DefineSprite_5402_SP_Title', record: 'DefineSprite_5404_SP_Record',
   credit: 'DefineSprite_5406_SP_Credit', select: 'DefineSprite_5408_SP_Select', reset: 'DefineSprite_5410_SP_Reset',
   waku: 'DefineSprite_5598_SP_Waku',
+  // The original opponents, as online players' avatars (frames: 1-2 normal, 3-4 cards, 5-6 drop, 7-8 win).
+  'avatar-giko': 'DefineSprite_4614_SP_Giko_R', 'avatar-sii': 'DefineSprite_4606_SP_Sii_R',
+  'avatar-morara': 'DefineSprite_4610_SP_Morara_R', 'avatar-shin': 'DefineSprite_4618_SP_shin_R',
+  'avatar-fun': 'DefineSprite_4622_SP_fun_R', 'avatar-zu': 'DefineSprite_4626_SP_zu_R',
+  'avatar-syobo': 'DefineSprite_4630_SP_syobo_R',
 };
 const BUTTONS = {
   hold0: 'DefineButton2_20025', raise2: 'DefineButton2_20030', raise: 'DefineButton2_20031', call: 'DefineButton2_20032',

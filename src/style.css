@@ -817,3 +817,97 @@ button {
 .figures {
   isolation: isolate;
 }
+
+/* --- Online play ---------------------------------------------------------------------------------- */
+.menu-button.big {
+  font-size: 19px;
+}
+
+.menu-button.small {
+  height: 22px !important;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.net-input {
+  position: absolute;
+  box-sizing: border-box;
+  padding: 0 5px;
+  border: 2px solid var(--ink);
+  border-radius: 2px;
+  background: #fff;
+  color: var(--ink);
+  font: 14px/18px var(--swf-gothic);
+  pointer-events: auto;
+}
+
+.net-input:focus {
+  outline: 2px solid #36c;
+  outline-offset: 0;
+}
+
+.net-input.code,
+.net-code {
+  font: bold 18px/18px 'Courier New', monospace;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.net-code {
+  color: #006633;
+  font-size: 24px;
+  line-height: 28px;
+}
+
+.net-face {
+  position: absolute;
+  box-sizing: border-box;
+  border: 1px solid var(--ink);
+  background-color: color-mix(in srgb, var(--accent) 45%, #fff);
+  background-repeat: no-repeat;
+}
+
+.net-player,
+.net-rules {
+  font-size: 13px;
+  line-height: 18px;
+  white-space: pre;
+  overflow: hidden;
+}
+
+.net-rules {
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.net-player.away {
+  color: #8a8a48;
+}
+
+/* Online play: the clock on your decision, in the corner of your box. */
+.decision-clock {
+  box-sizing: border-box;
+  border: 1px solid #333;
+  border-radius: 9px;
+  background: #fff;
+  color: var(--ink);
+  font: bold 13px/16px var(--swf-gothic);
+  text-align: center;
+  pointer-events: none;
+}
+
+.decision-clock.hurry {
+  background: #ff5a4d;
+  color: #fff;
+}
+
+/* ...and whoever the table is waiting on, where your buttons would be. */
+.think-text {
+  color: #fff;
+  font: bold 13px/18px var(--swf-gothic);
+  pointer-events: none;
+}
+
+.think-text.hurry {
+  color: #ff8a80;
+}

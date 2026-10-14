@@ -40,6 +40,42 @@ export interface TableOptions {
   speed?: { value: number; onChange: (v: number) => void };
   /** Spectating: the line under the table. */
   caption?: string;
+  /** Online play: seconds to make each decision (0 = no limit); out of time, the swap goes in as it stands
+   *  and the bet is a fold (or a call, when folding isn't allowed). */
+  decisionTime?: number;
+  /** Online play: the showdown moves on by itself after this many seconds (0: without waiting for anyone). */
+  autoNext?: number;
+  /** Online play: going broke doesn't end the game, so the table says so. */
+  online?: boolean;
+}
+
+/** Real seconds (not scaled by the game speed), shown counting down; `done` settles at zero. */
+class Countdown {
+  readonly done: Promise<void>;
+  private timer = 0;
+  private finish!: () => void;
+
+  constructor(private face: HTMLElement, seconds: number, label = '') {
+    this.done = new Promise((r) => (this.finish = r));
+    const end = performance.now() + seconds * 1000;
+    const tick = () => {
+      const left = Math.max(0, Math.ceil((end - performance.now()) / 1000));
+      face.textContent = label ? `${label} is deciding...  ${left}` : String(left);
+      face.classList.toggle('hurry', left <= 3);
+      if (left <= 0) {
+        this.stop();
+        this.finish();
+      }
+    };
+    face.style.display = '';
+    tick();
+    this.timer = window.setInterval(tick, 200);
+  }
+
+  stop(): void {
+    window.clearInterval(this.timer);
+    this.face.style.display = 'none';
+  }
 }
 
 export const seatName = (s: Seat): string => s.character?.name ?? player.name;
@@ -59,6 +95,10 @@ export class TableView implements MatchView {
   private buttons: Buttons;
   private result: HTMLDivElement[];
   private spectateBar?: HTMLElement;
+  /** The player's own decision clock (in the corner of their box), and whose turn it is otherwise. */
+  private clockFace!: HTMLDivElement;
+  private thinkFace!: HTMLDivElement;
+  private clock?: Countdown;
   private bgmTrack = Math.floor(Math.random() * 3) + 1;
   private ante = 0;
   /** The round being played (for the scoreboard). */
@@ -88,6 +128,10 @@ export class TableView implements MatchView {
     const ui = layer(this.root, 'controls');
     this.result = [[40, 195], [130, 195], [210, 195], [270, 195]].map(([x, y]) => textField(ui, 'result-text', x, y));
     this.buttons = new Buttons(ui);
+    this.clockFace = textField(ui, 'decision-clock', 327, 198, 26, 18);
+    this.thinkFace = textField(ui, 'think-text', 10, 196, 300, 18);
+    this.clockFace.style.display = 'none';
+    this.thinkFace.style.display = 'none';
     if (this.me < 0) {
       panelLayer.style.display = 'none';
       cards.style.display = 'none';
@@ -339,9 +383,38 @@ export class TableView implements MatchView {
     this.hand.enableHolds(true);
     // As in the original, the dealer's "Change?" sign is the confirm button.
     if (autoplay) await frames(10);
-    else await this.dealer.button('Change?');
+    else await this.dealer.button('Change?', this.startClock()?.done);
+    this.stopClock();
     this.hand.enableHolds(false);
     return [...this.hand.held];
+  }
+
+  // --- Decision timers (online play) -------------------------------------------------------------
+  private startClock(): Countdown | undefined {
+    this.stopClock();
+    if (this.opts.decisionTime) this.clock = new Countdown(this.clockFace, this.opts.decisionTime);
+    return this.clock;
+  }
+
+  private stopClock(): void {
+    this.clock?.stop();
+    this.clock = undefined;
+  }
+
+  /** Someone else is deciding: their name and time left, until `stopThinking` (or the next decision). */
+  thinking(name: string, seconds: number): void {
+    this.stopClock();
+    if (seconds) {
+      this.clock = new Countdown(this.thinkFace, seconds, name);
+    } else {
+      this.thinkFace.textContent = `${name} is deciding...`;
+      this.thinkFace.style.display = '';
+    }
+  }
+
+  stopThinking(): void {
+    this.stopClock();
+    this.thinkFace.style.display = 'none';
   }
 
   async playerSwap(hand: Card[], holds: boolean[]): Promise<void> {
@@ -396,7 +469,10 @@ export class TableView implements MatchView {
   async askBet(options: PlayerBet[], seats: Seat[], _rate: number, allIn: boolean): Promise<PlayerBet> {
     this.updateCoins(seats);
     if (autoplay) return options.includes('call') ? 'call' : options[0];
-    return this.buttons.choose(options, false, allIn ? { call: 'All In' } : {});
+    const timeUp = this.startClock()?.done.then((): PlayerBet => (options.includes('drop') ? 'drop' : 'call'));
+    const choice = await this.buttons.choose(options, false, allIn ? { call: 'All In' } : {}, timeUp);
+    this.stopClock();
+    return choice;
   }
 
   async playerBet(seat: Seat, action: PlayerBet): Promise<void> {
@@ -443,8 +519,11 @@ export class TableView implements MatchView {
   }
 
   async awaitMatch(): Promise<void> {
-    if (autoplay || this.me < 0) return frames(60);
-    await this.buttons.choose(['next'], true);
+    const auto = this.opts.autoNext;
+    if (autoplay || this.me < 0 || auto === 0) return frames(60);
+    if (auto === undefined) return void (await this.buttons.choose(['next'], true));
+    // Online: anyone may move on sooner, but the table never waits on one person.
+    await this.buttons.choose(['next'], true, {}, new Promise<'next'>((r) => setTimeout(() => r('next'), auto * 1000)));
   }
 
   async roundWinner(winners: Seat[], seats: Seat[], allFolded: boolean): Promise<void> {
@@ -487,6 +566,14 @@ export class TableView implements MatchView {
     const order = out.map((s, i) => [s, places[i]] as const).sort((a, b) => b[1] - a[1]);
     for (const [s, place] of order) {
       const slot = this.slots.get(s.index);
+      if (s.index === this.me && this.opts.online) {
+        this.panel.set('drop');
+        play('drop');
+        await this.dealer.say(`You're out! ${ordinal(place)}`, null);
+        await frames(110);
+        await this.dealer.out();
+        continue;
+      }
       if (!slot || !s.character) continue; // the player going out is handled by the game itself
       await slot.table.setPose('drop');
       play('drop');
